@@ -1,5 +1,5 @@
 import './App.css';
-import SimpleName from './features/simple_name/Index';
+import SimpleNameComponent from './features/simple_name/pages/SimpleNameComponent';
 
 function App() {
 
@@ -7,7 +7,7 @@ function App() {
     <div className="App">
       <h1>Nomes Brasileiros (IBGE)</h1>
       <div className="card">
-      <SimpleName/>
+      <SimpleNameComponent/>
       </div>
     </div>
   )

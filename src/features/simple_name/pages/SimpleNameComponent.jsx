@@ -1,5 +1,8 @@
 import { useState } from "react";
-function SimpleName() {
+import formatNumberWithDots from '../../../global/format_number_with_dots';
+import simpleNameController from '../controllers/simple_name_controller';
+
+function SimpleNameComponent() {
 
     const [name, setName] = useState("");
     const [apiData, setApiData] = useState([]);
@@ -8,22 +11,10 @@ function SimpleName() {
         setName(event.target.value);
     }
 
-    function formatNumberWithDots(x) {
-        return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-    }
-
-    const findNameDataInIbgeApi = async () => {
-
-        try {
-            const response = await fetch(`https://servicodados.ibge.gov.br/api/v2/censos/nomes/${name}`);
-            const apiData = await response.json();
-            apiData.map(
-                data => {
-                    setApiData(data.res);
-                }
-            );
-        } catch (error) {
-            alert(error);
+    const handleClickButton = async (event) => {
+        const response = await simpleNameController(name);
+        if(response.code == 200){
+            setApiData(response.data)
         }
     }
     return (
@@ -31,7 +22,7 @@ function SimpleName() {
             <div>
                 <input type="text" value={name} onChange={handleNameChange} />
                 <br />
-                <button onClick={() => findNameDataInIbgeApi()}>Buscar nome</button>
+                <button onClick={() => handleClickButton()}>Buscar nome</button>
             </div>
 
             <table>
@@ -57,4 +48,4 @@ function SimpleName() {
     );
 }
 
-export default SimpleName;
+export default SimpleNameComponent;
