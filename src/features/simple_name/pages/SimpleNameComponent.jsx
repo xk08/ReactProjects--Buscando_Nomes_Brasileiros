@@ -11,18 +11,16 @@ function SimpleNameComponent() {
         setName(event.target.value);
     }
 
-    const handleClickButton = async (event) => {
-        const response = await simpleNameController(name);
-        if(response.code == 200){
-            setApiData(response.data)
-        }
+    const handleButtonClicked = async () => {
+        const response = await simpleNameController(name ?? "xk08");
+        setApiData(response)
     }
     return (
         <>
             <div>
                 <input type="text" value={name} onChange={handleNameChange} />
                 <br />
-                <button onClick={() => handleClickButton()}>Buscar nome</button>
+                <button onClick={() => handleButtonClicked()}>Buscar nome</button>
             </div>
 
             <table>
