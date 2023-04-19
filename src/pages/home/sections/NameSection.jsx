@@ -1,59 +1,28 @@
 import { useState } from "react";
 import formatNumberWithDots from '../../../global/format_number_with_dots';
 import SimpleButtonComponent from '../../../global/components/buttons/SimpleButtonComponent';
-
 import UseFetchApi from '../../../global/Hooks/UseFetchApi';
-
 
 function NameSection() {
 
     const [name, setName] = useState("");
     const [apiData, setApiData] = useState([]);
+    const [requestValid, setRequestValid] = useState(false);
 
     const handleNameChange = (event) => {
         setName(event.target.value);
     }
 
     const handleButtonClicked = async () => {
-        const response = await findSimpleNameService(name ?? "xk08");
-        setApiData(response)
-    }
-
-
-    const findSimpleNameService = async (name) => {
-
-        /// TODO: Trocar para o Hook de UseFetchApi
-
-
-        let responseApi = [];
-
-        try {
-            const response = await fetch(`https://servicodados.ibge.gov.br/api/v2/censos/nomes/${name}`);
-
-            if (response.status == 200) {
-                const responseJs = await response.json();
-                responseJs.map(
-                    data => {
-                        if (data.res != undefined) {
-                            responseApi = data.res;
-                        } else {
-                            responseApi = [];
-                        }
-                    }
-                );
-
-            } else {
-                throw response;
-            }
-
-        } catch (error) {
-            ///TODO: Melhorar essa validação
-            responseApi = [];
+        let resposta = await UseFetchApi(`https://servicodados.ibge.gov.br/api/v2/censos/nomes/${name}`);
+        let dados = await resposta.data;
+        if (dados.length == 1) {
+            setApiData(dados[0].res)
+            setRequestValid(true);
+        } else {
+            setRequestValid(false);
         }
-
-        return responseApi;
     }
-
     return (
         <>
             <div>
@@ -63,25 +32,32 @@ function NameSection() {
 
             </div>
 
-            <table>
-                <thead>
-                    <tr>
-                        <td>Periodo</td>
-                        <td>Quantidade</td>
-                    </tr>
-                </thead>
+            {requestValid ?
+                <table>
+                    <thead>
+                        <tr>
+                            <td>Periodo</td>
+                            <td>Quantidade</td>
+                        </tr>
+                    </thead>
 
-                <tbody>
-                    {apiData.map(
-                        data =>
-                            <tr key={data.periodo}>
-                                <td>{data.periodo}</td>
-                                <td>{formatNumberWithDots(data.frequencia)}</td>
-                            </tr>
-                    )}
-                </tbody>
+                    <tbody>
+                        {apiData.map(
+                            data =>
+                                <tr key={data.periodo}>
+                                    <td>{data.periodo}</td>
+                                    <td>{formatNumberWithDots(data.frequencia)}</td>
+                                </tr>
+                        )}
+                    </tbody>
 
-            </table>
+                </table>
+                :
+                /* ///TODO: Trocar para um componente de erro personalizado... */
+                <div>
+                    Nada pra exibir aqui
+                </div>
+            }
         </>
     );
 }
