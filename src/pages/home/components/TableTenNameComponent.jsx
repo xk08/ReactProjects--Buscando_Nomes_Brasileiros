@@ -1,11 +1,10 @@
-import formatNumberWithDots from '../../../../global/format_number_with_dots';
+import formatNumberWithDots from '../../../global/format_number_with_dots';
 
-function TableThreeNamesComponent(props) {
+function TableTenNamesComponent(props) {
     return (
 
         <div>
-            <h2>Top 3 nomes brasileiros</h2>
-            {/* TOP 3 NOMES BRASILEIROS*/}
+            <h2>Top 10 nomes brasileiros</h2>
             <table>
                 <thead>
                     <tr>
@@ -16,7 +15,7 @@ function TableThreeNamesComponent(props) {
 
                     {props.apiDataOk ? <tbody>
                         {
-                            props.apiRankingThreeNames.map(
+                            props.apiRankingTenNames.map(
                                 dados =>
 
                                     <td key={dados.ranking}>
@@ -27,23 +26,20 @@ function TableThreeNamesComponent(props) {
                                         </tr>
 
                                         <tr >
-
                                             <td>{dados.nome}</td>
-
                                         </tr>
 
                                         <tr >
                                             <td>{formatNumberWithDots(dados.frequencia)}
                                             </td>
                                         </tr>
-
                                     </td>
                             )
                         }
                     </tbody>
                         :
                         <div>
-                            <h4>Não foi possivel carregar o Top 3</h4>
+                            <h4>Não foi possivel carregar o Top 10</h4>
                         </div>}
 
                 </thead>
@@ -52,4 +48,4 @@ function TableThreeNamesComponent(props) {
     );
 }
 
-export default TableThreeNamesComponent;
+export default TableTenNamesComponent;

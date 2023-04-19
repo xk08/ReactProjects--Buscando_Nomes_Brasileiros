@@ -1,8 +1,11 @@
 import { useState } from "react";
 import formatNumberWithDots from '../../../global/format_number_with_dots';
-import SimpleButtonComponent from '././Buttons/SimpleButtonComponent';
+import SimpleButtonComponent from '../../../global/components/buttons/SimpleButtonComponent';
 
-function SimpleNameComponent() {
+import UseFetchApi from '../../../global/Hooks/UseFetchApi';
+
+
+function NameSection() {
 
     const [name, setName] = useState("");
     const [apiData, setApiData] = useState([]);
@@ -17,14 +20,16 @@ function SimpleNameComponent() {
     }
 
 
-
     const findSimpleNameService = async (name) => {
 
+        /// TODO: Trocar para o Hook de UseFetchApi
+
+
         let responseApi = [];
-    
+
         try {
             const response = await fetch(`https://servicodados.ibge.gov.br/api/v2/censos/nomes/${name}`);
-    
+
             if (response.status == 200) {
                 const responseJs = await response.json();
                 responseJs.map(
@@ -36,16 +41,16 @@ function SimpleNameComponent() {
                         }
                     }
                 );
-    
+
             } else {
                 throw response;
             }
-    
+
         } catch (error) {
             ///TODO: Melhorar essa validação
             responseApi = [];
         }
-    
+
         return responseApi;
     }
 
@@ -81,4 +86,4 @@ function SimpleNameComponent() {
     );
 }
 
-export default SimpleNameComponent;
+export default NameSection;
