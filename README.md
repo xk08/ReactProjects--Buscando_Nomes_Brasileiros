@@ -2,6 +2,6 @@
 -----
 # Nomes Brazukas
 
-#### <a href="https://nomebrazuka.netlify.app/" target="_blank">Acesse o Site</a>
+#### <a href="https://nomebrazuka.netlify.app/" target="_blank"> Acesse o Site </a>
 
 Em construção...
