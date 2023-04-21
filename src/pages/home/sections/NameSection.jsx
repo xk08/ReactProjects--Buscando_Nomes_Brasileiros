@@ -1,20 +1,33 @@
 import { useState } from "react";
+
+import useFetch from '../../../global/Hooks/useFetch';
+
 import formatNumberWithDots from '../../../global/format_number_with_dots';
+import textLengthValidation from '../../../global/validators/text_length_validator';
+
+import ErrorTextComponent from '../../../global/components/ErrorTextComponent';
+import SimpleInputComponent from '../../../global/components/inputs/SimpleInputComponent';
 import SimpleButtonComponent from '../../../global/components/buttons/SimpleButtonComponent';
-import UseFetchApi from '../../../global/Hooks/UseFetchApi';
+import EmptyComponent from '../../../global/components/EmptyComponent';
 
 function NameSection() {
 
+    /* Estados */
     const [name, setName] = useState("");
     const [apiData, setApiData] = useState([]);
-    const [requestValid, setRequestValid] = useState(false);
 
+    /* Estados - Validações */
+    const [requestValid, setRequestValid] = useState();
+    const [textLengthIsNotValid, setTextLengthIsNotValid] = useState(true);
+    const [textLengthValidationSmall, setTextLengthValidationSmall] = useState("");
+
+    /* Funções Handle */
     const handleNameChange = (event) => {
         setName(event.target.value);
     }
 
     const handleButtonClicked = async () => {
-        let resposta = await UseFetchApi(`https://servicodados.ibge.gov.br/api/v2/censos/nomes/${name}`);
+        let resposta = await useFetch(`https://servicodados.ibge.gov.br/api/v2/censos/nomes/${name}`);
         let dados = await resposta.data;
         if (dados.length == 1) {
             setApiData(dados[0].res)
@@ -23,12 +36,37 @@ function NameSection() {
             setRequestValid(false);
         }
     }
+
+    /* Validações */
+    const textLengthValidator = (event, minLength) => {
+        let text = textLengthValidation(event, minLength)
+        if (!text.isValid) {
+            setTextLengthIsNotValid(true);
+            setTextLengthValidationSmall( (minLength - text.textLength) == 1 ? `Necessário ${minLength - text.textLength} letra` : `Necessário ${minLength - text.textLength} letras`);
+        } else {
+            setTextLengthIsNotValid(false);
+            setTextLengthValidationSmall("");
+        }
+    }
+
+    /* Renderização da tela */
     return (
         <>
             <div>
-                <input type="text" value={name} onChange={handleNameChange} />
+                <SimpleInputComponent
+                    type={"text"}
+                    value={name}
+                    fnOnChange={handleNameChange}
+                    fnOnKeyUp={(event) => textLengthValidator(event, 3)}
+                    smallDescription={textLengthValidationSmall}
+                />
+
                 <br />
-                <SimpleButtonComponent label="Buscar nome" fn={handleButtonClicked} />
+                <SimpleButtonComponent
+                    label="Buscar nome"
+                    fn={handleButtonClicked}
+                    disabled={textLengthIsNotValid}
+                />
 
             </div>
 
@@ -52,11 +90,10 @@ function NameSection() {
                     </tbody>
 
                 </table>
-                :
-                /* ///TODO: Trocar para um componente de erro personalizado... */
-                <div>
-                    Nada pra exibir aqui
-                </div>
+                : (requestValid == null) ?
+                    <EmptyComponent />
+                    :
+                    <ErrorTextComponent title={"Nome não encontrado"} description="Escolha outro nome e tente novamente." />
             }
         </>
     );

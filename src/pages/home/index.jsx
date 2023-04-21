@@ -1,6 +1,7 @@
 import NameSection from './sections/NameSection';
 import RankingSection from './sections/RankingSection';
 import HeaderSection from './sections/HeaderSection';
+import FooterSection from './sections/FooterSection';
 
 function HomePage() {
     
@@ -11,6 +12,8 @@ function HomePage() {
             <RankingSection />
 
             <NameSection />
+
+            <FooterSection />
         </>
     );
 }
