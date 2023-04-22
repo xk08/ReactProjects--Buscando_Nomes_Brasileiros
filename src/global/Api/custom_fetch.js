@@ -12,15 +12,14 @@ export default async function customFetch(baseUrl, requestInit) {
                 status: resposta.status,
                 data: data
             }
-            return response;
         } else {
             throw resposta;
         }
     } catch (error) {
         response = {
             status: error.status,
-            data: resposta
+            data: error
         }
-        return response;
     }
+    return response;
 }

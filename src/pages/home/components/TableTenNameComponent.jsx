@@ -1,49 +1,51 @@
 import formatNumberWithDots from '../../../global/format_number_with_dots';
+import ErrorTextComponent from '../../../global/components/ErrorTextComponent';
+import LoadingSpinnerComponent from '../../../global/components/animations/LoadingSpinner/LoadingSpinnerComponent';
 
 function TableTenNamesComponent(props) {
     return (
 
         <div>
             <h2>Top 10 nomes brasileiros</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <td>Posição</td>
-                        <td>Nome</td>
-                        <td>Frequência</td>
-                    </tr>
+            {props.isLoading ?
+                <LoadingSpinnerComponent />
+                : <table>
+                    <thead>
+                        <tr>
+                            <td>Posição</td>
+                            <td>Nome</td>
+                            <td>Frequência</td>
+                        </tr>
 
-                    {props.apiDataOk ? <tbody>
-                        {
-                            props.apiRankingTenNames.map(
-                                dados =>
+                        {props.apiDataOk ? <tbody>
+                            {
+                                props.apiRankingTenNames.map(
+                                    dados =>
 
-                                    <td key={dados.ranking}>
-                                        <tr >
-                                            <td>{dados.ranking}
+                                        <td key={dados.ranking}>
+                                            <tr >
+                                                <td>{dados.ranking}
 
-                                            </td>
-                                        </tr>
+                                                </td>
+                                            </tr>
 
-                                        <tr >
-                                            <td>{dados.nome}</td>
-                                        </tr>
+                                            <tr >
+                                                <td>{dados.nome}</td>
+                                            </tr>
 
-                                        <tr >
-                                            <td>{formatNumberWithDots(dados.frequencia)}
-                                            </td>
-                                        </tr>
-                                    </td>
-                            )
+                                            <tr >
+                                                <td>{formatNumberWithDots(dados.frequencia)}
+                                                </td>
+                                            </tr>
+                                        </td>
+                                )
+                            }
+                        </tbody>
+                            : <ErrorTextComponent title={"Informação desconhecida"} description="Não foi possível encontrar o Ranking de Top 10 nomes brasileiros." />
                         }
-                    </tbody>
-                        :
-                        <div>
-                            <h4>Não foi possivel carregar o Top 10</h4>
-                        </div>}
-
-                </thead>
-            </table>
+                    </thead>
+                </table>
+            }
         </div>
     );
 }
