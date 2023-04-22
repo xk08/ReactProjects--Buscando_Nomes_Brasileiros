@@ -1,6 +1,7 @@
 import { useState } from "react";
 
-import useFetch from '../../../global/Hooks/useFetch';
+import customFetch from '../../../global/Api/custom_fetch';
+
 
 import formatNumberWithDots from '../../../global/format_number_with_dots';
 import textLengthValidation from '../../../global/validators/text_length_validator';
@@ -27,8 +28,8 @@ function NameSection() {
     }
 
     const handleButtonClicked = async () => {
-        let resposta = await useFetch(`https://servicodados.ibge.gov.br/api/v2/censos/nomes/${name}`);
-        let dados = await resposta.data;
+        let resposta = await customFetch(`https://servicodados.ibge.gov.br/api/v2/censos/nomes/${name}`);
+        let dados = resposta.data;
         if (dados.length == 1) {
             setApiData(dados[0].res)
             setRequestValid(true);

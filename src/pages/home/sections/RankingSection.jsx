@@ -5,7 +5,7 @@ import TableTenNamesComponent from '../components/TableTenNameComponent';
 import EmptyComponent from '../../../global/components/EmptyComponent';
 import SimpleButtonComponent from '../../../global/components/buttons/SimpleButtonComponent';
 
-import useFetch from '../../../global/Hooks/useFetch';
+import customFetch from '../../../global/Api/custom_fetch';
 
 function RankingSection() {
 
@@ -24,7 +24,7 @@ function RankingSection() {
     }, []);
 
     const findRankingNamesInApi = async () => {
-       let response = await useFetch("https://servicodados.ibge.gov.br/api/v2/censos/nomes/ranking")
+       let response = await customFetch("https://servicodados.ibge.gov.br/api/v2/censos/nomes/ranking")
        if(response.status == 200){
         defineFilters(response.data[0].res ?? [])
        }else{
