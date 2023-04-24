@@ -25,6 +25,7 @@ function RankingSection() {
 
     /// Estados de componentes filhos
     const [sexSetedByChildComponent, setSexSetedByChildComponent] = useState();
+    const [decadaSetedByChildComponent, setDecadaSetedByChildComponent] = useState();
 
     /// Executa automáticamente ao montar a seção (apenas 1x)
     useEffect(() => {
@@ -42,10 +43,17 @@ function RankingSection() {
         setButtonFilterIsDisabled(false);
     }
 
-    const filtersValidator = (sexFilter) => {
+    const handleChildDecadaFilterCallback = (childData) => {
+        setDecadaSetedByChildComponent(childData);
+        ///TODO: Repensar a lógica com mais de uma validação...
+        //setButtonFilterIsDisabled(false);
+    }
+
+
+    const filtersValidator = (sexFilter, decadaFilter) => {
         let filtersIsValid = false;
 
-        if (sexFilter != undefined) {
+        if (sexFilter != undefined && decadaFilter != undefined) {
             filtersIsValid = true;
         }
         return filtersIsValid;
@@ -53,10 +61,11 @@ function RankingSection() {
 
     const handleExecuteFilterInsideComponent = () => {
 
-        let filterIsValid = filtersValidator(sexSetedByChildComponent);
+        let filterIsValid = filtersValidator(sexSetedByChildComponent, decadaSetedByChildComponent);
 
         if (filterIsValid) {
-            findRankingNamesInApi("sexo");
+            //findRankingNamesInApi("sexo");
+            findRankingNamesInApi("decada");
         }
     }
 
@@ -95,7 +104,7 @@ function RankingSection() {
                 break;
 
             case "decada":
-                baseUrlWithFilterSeted = `${apiBaseUrlIbge}/v2/censos/nomes/ranking/?decada=2010`;
+                baseUrlWithFilterSeted = `${apiBaseUrlIbge}/v2/censos/nomes/ranking/?decada=${decadaSetedByChildComponent}`;
                 break;
 
             case "localidade":
@@ -140,7 +149,8 @@ function RankingSection() {
             <br />
             {(apiDataOk && showTenRankingSection) ?
                 <RankingFiltersComponent
-                    parentCallback={handleChildSexFilterCallback}
+                    parentCallbackRadioOption={handleChildSexFilterCallback}
+                    parentCallbackDecada={handleChildDecadaFilterCallback}
                     fn={handleExecuteFilterInsideComponent}
                     disabled={buttonFilterIsDisabled}
 
@@ -162,7 +172,8 @@ function RankingSection() {
 
             <div>
                 <h5>Filtros capturados dos components filhos</h5>
-                Sexo capturado do filho: {sexSetedByChildComponent ?? "Não selecionado"}
+                <p> Sexo capturado do filho: {sexSetedByChildComponent ?? "Sexo não selecionado"} </p>
+                <p> Decada capturada do filho: {decadaSetedByChildComponent ?? "Decada não selecionada"} </p>
             </div>
 
         </>
