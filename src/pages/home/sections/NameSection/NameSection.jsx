@@ -1,18 +1,21 @@
 import { useState } from "react";
 
-import customFetch from '../../../global/Api/custom_fetch';
-import {apiBaseUrlIbge} from '../../../global/Api/api_config';
+import customFetch from '../../../../global/Api/custom_fetch';
+import { apiBaseUrlIbge } from '../../../../global/Api/api_config';
 
-import formatNumberWithDots from '../../../global/format_number_with_dots';
-import textLengthValidation from '../../../global/validators/text_length_validator';
+import formatNumberWithDots from '../../../../global/format_number_with_dots';
+import textLengthValidation from '../../../../global/validators/text_length_validator';
 
-import ErrorTextComponent from '../../../global/components/ErrorTextComponent';
-import SimpleInputComponent from '../../../global/components/inputs/SimpleInputComponent';
-import SimpleButtonComponent from '../../../global/components/buttons/SimpleButtonComponent';
-import EmptyComponent from '../../../global/components/EmptyComponent';
+import ErrorTextComponent from '../../../../global/components/ErrorTextComponent';
+import SimpleInputComponent from '../../../../global/components/inputs/SimpleInputComponent';
+import EmptyComponent from '../../../../global/components/EmptyComponent';
 
-import LoadingSkeletonComponent from '../../../global/components/animations/SkeletonLoader/LoadingSkeletonComponent';
+import LoadingSkeletonComponent from '../../../../global/components/animations/SkeletonLoader/LoadingSkeletonComponent';
 //import LoadingSpinnerComponent from '../../../global/components/animations/LoadingSpinner/LoadingSpinnerComponent';
+
+import SimpleButtonStyledComponent from '../../../../global/components/buttons/SimpleButtonStyledComponent';
+
+import styles from "./NameSection.module.css";
 
 function NameSection() {
 
@@ -51,7 +54,7 @@ function NameSection() {
         setLastNameSearched(name);
         setName("");
         setTextLengthIsNotValid(true);
-    
+
     }
 
     /* Validações */
@@ -68,7 +71,7 @@ function NameSection() {
 
     /* Renderização da tela */
     return (
-        <>
+        <div className={styles.div}>
             <div>
                 <SimpleInputComponent
                     type={"text"}
@@ -79,7 +82,7 @@ function NameSection() {
                 />
 
                 <br />
-                <SimpleButtonComponent
+                <SimpleButtonStyledComponent
                     label="Buscar nome"
                     fn={handleButtonClicked}
                     disabled={textLengthIsNotValid}
@@ -95,10 +98,10 @@ function NameSection() {
 
             {
                 isLoading ?
-                <LoadingSkeletonComponent 
-                    exibeThreeNamesCardSkeleton={false}
-                    exibeNameDataCardSkeleton={true}
-            />
+                    <LoadingSkeletonComponent
+                        exibeThreeNamesCardSkeleton={false}
+                        exibeNameDataCardSkeleton={true}
+                    />
                     : requestValid
                         ? <table>
                             <thead>
@@ -126,7 +129,7 @@ function NameSection() {
                                 description="Escolha outro nome e tente novamente."
                             />
             }
-        </>
+        </div>
     );
 }
 

@@ -1,61 +1,63 @@
 /* Skeleton styles*/
 .skeletonBlog {
-    margin-bottom: 2em;
-    animation: scale 4s infinite;
+    /* margin-bottom: 2em; */
+    animation: scale 2s infinite;
 }
 
 .skeletonThreeNamesCard {
-    height: 110px;
-    width:400px;
+    height: 116px;
+    width: 400px;
     border-radius: 6px;
     background: #E5E4E2;
-    margin-top: 10px;
+    /* margin-top: 10px; */
 }
 
 .skeletonDataCard {
-    height: 300px;
-    width:230px;
+    /* height: 300px;
+    width: 230px; */
     border-radius: 6px;
     background: #E5E4E2;
-    margin-top: 10px;
-}
-
-.skeletonAvatar {
-    background: #E5E4E2;
-    height: 60px;
-    width: 60px;
-    border-radius: 50%;
-}
-
-.skeletonAuthor {
-    background: #E5E4E2;
-    height: 30px;
-    width: 150px;
-    margin-left: 1rem;
-    border-radius: 6px;
-}
-
-.skeletonImage {
-    height: 200px;
-    width: 350px;
-    border-radius: 6px;
-    background: #E5E4E2;
-    margin-top: 10px;
-}
-
-.skeletonFooter {
-    height: 30px;
-    width: 280px;
-    border-radius: 6px;
-    background: #E5E4E2;
-    margin-top: 10px;
+    /* margin-top: 10px; */
 }
 
 .skeletonContainer {
     display: grid;
     justify-content: center;
     align-items: center;
-  }
+}
+
+
+/* .skeletonAvatar {
+    background: #E5E4E2;
+    height: 60px;
+    width: 60px;
+    border-radius: 50%;
+} */
+
+/* .skeletonAuthor {
+    background: #E5E4E2;
+    height: 30px;
+    width: 150px;
+    margin-left: 1rem;
+    border-radius: 6px;
+} */
+
+/* .skeletonImage {
+    height: 200px;
+    width: 350px;
+    border-radius: 6px;
+    background: #E5E4E2;
+    margin-top: 10px;
+} */
+
+/* .skeletonFooter {
+    height: 30px;
+    width: 280px;
+    border-radius: 6px;
+    background: #E5E4E2;
+    margin-top: 10px;
+} */
+
 
 /* Skeleton animation*/
 @keyframes scale {

@@ -10,7 +10,7 @@ function RankingFiltersComponent(props) {
     const handleSetRadioOption = (e) => {
         setRadioOption(e.target.value)
         /// Envia por callBack, o valor selecionado neste componente, para o componente pai
-        props.parentCallbackRadioOption(e.target.value ?? "Sexo não selecionado");
+        props.parentCallbackRadioOption(e.target.value ?? "");
     }
 
     /// Filtro: Decadas
@@ -19,17 +19,13 @@ function RankingFiltersComponent(props) {
     const handleSetDecada = (e) => {
         setDecada(e.target.value)
         /// Envia por callBack, o valor selecionado neste componente, para o componente pai
-        props.parentCallbackDecada(e.target.value ?? "Década não selecionada");
+        props.parentCallbackDecada(e.target.value ?? "");
     }
-
 
 
     return (
         <>
             <div>
-
-
-
 
                 <p>Sexo:</p>
 
@@ -76,16 +72,14 @@ function RankingFiltersComponent(props) {
                 </select>
             </div>
 
+            <br />
 
             <SimpleButtonComponent
                 label="Buscar (com filtros)"
                 fn={props.fn}
                 disabled={props.disabled}
             />
-
             <br />
-
-
 
 
         </>
