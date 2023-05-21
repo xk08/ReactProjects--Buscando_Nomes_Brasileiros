@@ -1,27 +1,7 @@
-import { useState } from "react";
 import SimpleButtonComponent from "../../../global/components/buttons/SimpleButtonComponent"
 import decadasList from "../data/decadas_list"
 
-function RankingFiltersComponent(props) {
-
-    /// Filtro: Sexo
-    const [radioOption, setRadioOption] = useState()
-
-    const handleSetRadioOption = (e) => {
-        setRadioOption(e.target.value)
-        /// Envia por callBack, o valor selecionado neste componente, para o componente pai
-        props.parentCallbackRadioOption(e.target.value ?? "");
-    }
-
-    /// Filtro: Decadas
-    const [decada, setDecada] = useState("");
-
-    const handleSetDecada = (e) => {
-        setDecada(e.target.value)
-        /// Envia por callBack, o valor selecionado neste componente, para o componente pai
-        props.parentCallbackDecada(e.target.value ?? "");
-    }
-
+function RankingFiltersComponent({ sexo, handleChangeSexo, decada, handleChangeDecada, disabled, fnOnClick }) {
 
     return (
         <>
@@ -34,8 +14,8 @@ function RankingFiltersComponent(props) {
                     name="radioGroup"
                     value="M"
                     id="M"
-                    checked={radioOption == "M"}
-                    onChange={handleSetRadioOption}
+                    checked={sexo == "M"}
+                    onChange={handleChangeSexo}
                 />
                 <label htmlFor="M">Maculino</label>
 
@@ -45,8 +25,8 @@ function RankingFiltersComponent(props) {
                     name="radioGroup"
                     value="F"
                     id="F"
-                    checked={radioOption == "F"}
-                    onChange={handleSetRadioOption}
+                    checked={sexo == "F"}
+                    onChange={handleChangeSexo}
                 />
                 <label htmlFor="F">Feminino</label>
 
@@ -63,7 +43,7 @@ function RankingFiltersComponent(props) {
             <div>
                 <select
                     value={decada}
-                    onChange={handleSetDecada}>
+                    onChange={handleChangeDecada}>
                     {decadasList.map((option) => (
                         <option
                             key={option.value}
@@ -76,8 +56,8 @@ function RankingFiltersComponent(props) {
 
             <SimpleButtonComponent
                 label="Buscar (com filtros)"
-                fn={props.fn}
-                disabled={props.disabled}
+                fn={fnOnClick}
+                disabled={disabled}
             />
             <br />
 
