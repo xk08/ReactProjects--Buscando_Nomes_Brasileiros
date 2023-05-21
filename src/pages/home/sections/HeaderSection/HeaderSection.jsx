@@ -1,4 +1,4 @@
-import HeaderComponent from '../components/HeaderComponent';
+import HeaderComponent from '../../components/HeaderComponent';
 
 function HeaderSection() {
     return (

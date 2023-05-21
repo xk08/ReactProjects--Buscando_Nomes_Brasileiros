@@ -1,64 +1,49 @@
 import formatNumberWithDots from '../../../global/format_number_with_dots';
 import ErrorTextComponent from '../../../global/components/ErrorTextComponent';
 import LoadingSkeletonComponent from '../../../global/components/animations/SkeletonLoader/LoadingSkeletonComponent';
-//import LoadingSpinnerComponent from '../../../global/components/animations/LoadingSpinner/LoadingSpinnerComponent';
+import { Grid } from '@mui/material';
+import RankComponent from '../../../global/components/rank/RankComponent';
+
+const rankingNumber = [1, 2, 3];
 
 function TableThreeNamesComponent(props) {
-    return (
+  return (
+    <Grid container spacing={2}>
+      <Grid item xs={12}>
+        <h2>Top 3 nomes brasileiros</h2>
+      </Grid>
 
-        <div>
-            <h2>Top 3 nomes brasileiros</h2>
-            {/* TOP 3 NOMES BRASILEIROS*/}
-
-            {props.isLoading ?
-            <LoadingSkeletonComponent 
+      {props.isLoading ? (
+        <>
+          {rankingNumber.map((ranking) => (
+            <Grid
+              key={ranking}
+              item
+              xs={12}
+              sm={6}
+              md={4}
+            >
+              <LoadingSkeletonComponent
                 exibeThreeNamesCardSkeleton={true}
                 exibeNameDataCardSkeleton={false}
-            />
-           
-           : <table>
-                    <thead>
-                        <tr>
-                            <td>Posição</td>
-                            <td>Nome</td>
-                            <td>Frequência</td>
-                        </tr>
+              />
+            </Grid>
+          ))}
+        </>
 
-                        {props.apiDataOk ?
-                            <tbody>
-                                {
-                                    props.apiRankingThreeNames.map(
-                                        dados =>
-
-                                            <td key={dados.ranking}>
-                                                <tr >
-                                                    <td>{dados.ranking}
-
-                                                    </td>
-                                                </tr>
-
-                                                <tr >
-
-                                                    <td>{dados.nome}</td>
-
-                                                </tr>
-
-                                                <tr >
-                                                    <td>{formatNumberWithDots(dados.frequencia)}
-                                                    </td>
-                                                </tr>
-
-                                            </td>
-                                    )
-                                }
-                            </tbody>
-                            : <ErrorTextComponent title={"Informação desconhecida"} description="Não foi possível encontrar o Ranking de Top 3 nomes brasileiros." />
-                        }
-                    </thead>
-                </table>
-            }
-        </div>
-    );
+      ) : props.apiDataOk ? (
+        props.apiRankingThreeNames.map((dados) => (
+          <RankComponent
+            key={dados.ranking}
+            ranking={dados.ranking}
+            nome={dados.nome}
+            frequencia={formatNumberWithDots(dados.frequencia)}
+          ></RankComponent>
+        ))
+      ) : <ErrorTextComponent title={"Informação desconhecida"} description="Não foi possível encontrar o Ranking de Top 3 nomes brasileiros." />
+      }
+    </Grid>
+  );
 }
 
 export default TableThreeNamesComponent;

@@ -1,4 +1,4 @@
-import FooterComponent from "../components/FooterComponent"
+import FooterComponent from "../../components/FooterComponent"
 function FooterSection() {
     return (
         <>

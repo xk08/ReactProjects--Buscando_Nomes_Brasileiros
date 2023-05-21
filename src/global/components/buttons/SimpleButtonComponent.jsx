@@ -1,9 +1,11 @@
-function SimpleButtonComponent(props) {
+// import "./SimpleButtonComponent.module.css";
+
+function SimpleButtonComponent({ label, id, className, fn, disabled }) {
     return <button
-        id={props.id}
-        className={props.className}
-        onClick={props.fn}
-        disabled={props.disabled}
-        >{props.label}</button>
+        id={id}
+        className={className}
+        onClick={fn}
+        disabled={disabled}
+    >{label}</button>
 }
 export default SimpleButtonComponent;
