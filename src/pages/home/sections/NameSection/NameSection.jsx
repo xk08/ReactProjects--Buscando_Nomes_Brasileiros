@@ -1,148 +1,138 @@
 import { useState } from "react";
 
-import customFetch from '../../../../global/Api/custom_fetch';
-import { apiBaseUrlIbge } from '../../../../global/Api/api_config';
+import customFetch from "../../../../global/Api/custom_fetch";
+import { apiBaseUrlIbge } from "../../../../global/Api/api_config";
 
-import formatNumberWithDots from '../../../../global/format_number_with_dots';
-import textLengthValidation from '../../../../global/validators/text_length_validator';
+import formatNumberWithDots from "../../../../global/format_number_with_dots";
+import textLengthValidation from "../../../../global/validators/text_length_validator";
 
-import ErrorTextComponent from '../../../../global/components/ErrorTextComponent';
-import SimpleInputComponent from '../../../../global/components/inputs/SimpleInputComponent';
-import EmptyComponent from '../../../../global/components/EmptyComponent';
+import ErrorTextComponent from "../../../../global/components/ErrorTextComponent";
+import SimpleInputComponent from "../../../../global/components/inputs/SimpleInputComponent";
+import EmptyComponent from "../../../../global/components/EmptyComponent";
 
-import LoadingSkeletonComponent from '../../../../global/components/animations/SkeletonLoader/LoadingSkeletonComponent';
-//import LoadingSpinnerComponent from '../../../global/components/animations/LoadingSpinner/LoadingSpinnerComponent';
+import LoadingSkeletonComponent from "../../../../global/components/animations/SkeletonLoader/LoadingSkeletonComponent";
 
-import SimpleButtonStyledComponent from '../../../../global/components/buttons/SimpleButtonStyledComponent';
-
-import { Grid } from '@mui/material';
+import SimpleButtonStyledComponent from "../../../../global/components/buttons/SimpleButtonStyledComponent";
 
 import styles from "./NameSection.module.css";
-import TextField from "@mui/material/TextField";
+import { Grid, Table, TableHead, TableRow, TableCell, TableBody, Card, Typography } from "@mui/material";
 
 function NameSection() {
+  /* Estados */
+  const [name, setName] = useState("");
+  const [lastNameSearched, setLastNameSearched] = useState("");
+  const [apiData, setApiData] = useState([]);
 
-    /* Estados */
-    const [name, setName] = useState("");
-    const [lastNameSearched, setLastNameSearched] = useState("");
-    const [apiData, setApiData] = useState([]);
+  /* Estados - Validações */
+  const [requestValid, setRequestValid] = useState();
+  const [textLengthIsNotValid, setTextLengthIsNotValid] = useState(true);
+  const [textLengthValidationSmall, setTextLengthValidationSmall] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
-    /* Estados - Validações */
-    const [requestValid, setRequestValid] = useState();
-    const [textLengthIsNotValid, setTextLengthIsNotValid] = useState(true);
-    const [textLengthValidationSmall, setTextLengthValidationSmall] = useState("");
-    const [isLoading, setIsLoading] = useState(false);
+  /* Funções Handle */
+  const handleNameChange = (event) => {
+    setName(event.target.value);
+  };
 
-    /* Funções Handle */
-    const handleNameChange = (event) => {
-        setName(event.target.value);
+  const handleButtonClicked = async () => {
+    setIsLoading(true);
+    let resposta = await customFetch(`${apiBaseUrlIbge}/v2/censos/nomes/${name}`);
+
+    setTimeout(() => {
+      let dados = resposta.data;
+      if (dados.length == 1) {
+        setApiData(dados[0].res);
+        setRequestValid(true);
+      } else {
+        setRequestValid(false);
+      }
+      setIsLoading(false);
+    }, 1300);
+
+    setLastNameSearched(name);
+    setName("");
+    setTextLengthIsNotValid(true);
+  };
+
+  /* Validações */
+  const textLengthValidator = (event, minLength) => {
+    let text = textLengthValidation(event, minLength);
+    if (!text.isValid) {
+      setTextLengthIsNotValid(true);
+      setTextLengthValidationSmall(minLength - text.textLength == 1 ? `Necessário +${minLength - text.textLength} caractere` : `Necessário +${minLength - text.textLength} caracteres`);
+    } else {
+      setTextLengthIsNotValid(false);
+      setTextLengthValidationSmall("");
     }
+  };
 
-    const handleButtonClicked = async () => {
+  /* Renderização da tela */
+  return (
+    <Grid container spacing={2} justifyContent="center">
+      <Grid item xs={12}>
+        <Typography variant="h5" component="h2">
+          Busca por nome
+        </Typography>
+      </Grid>
 
-        setIsLoading(true);
-        let resposta = await customFetch(`${apiBaseUrlIbge}/v2/censos/nomes/${name}`);
+      <Grid item xs={12} sm={6} container alignItems="center" justifyContent="center">
+        <SimpleInputComponent type="text" value={name} fnOnChange={handleNameChange} fnOnKeyUp={(event) => textLengthValidator(event, 3)} smallDescription={textLengthValidationSmall} style={{ width: "100%" }} />
+        <SimpleButtonStyledComponent label="Buscar nome" fn={handleButtonClicked} disabled={textLengthIsNotValid} />
+      </Grid>
 
-        setTimeout(() => {
-            let dados = resposta.data;
-            if (dados.length == 1) {
-                setApiData(dados[0].res)
-                setRequestValid(true);
-            } else {
-                setRequestValid(false);
-            }
-            setIsLoading(false);
-        }, 1300);
+      <Grid item xs={12}>
+        <Card sx={{ borderRadius: 5, boxShadow: 3 }}>
+          <div className={styles.div}>
+            {requestValid != null ? <h3>Informações sobre o nome: {lastNameSearched}</h3> : <EmptyComponent />}
 
-        setLastNameSearched(name);
-        setName("");
-        setTextLengthIsNotValid(true);
+            {isLoading ? (
+              <LoadingSkeletonComponent exibeThreeNamesCardSkeleton={false} exibeNameDataCardSkeleton={true} />
+            ) : requestValid ? (
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    <TableCell style={{ fontWeight: "bold" }}>
+                      <Typography variant="body1" component="p" align="center" color="primary">
+                        Período
+                      </Typography>
+                    </TableCell>
 
-    }
+                    <TableCell style={{ fontWeight: "bold" }}>
+                      <Typography variant="body1" component="p" align="center" color="primary">
+                        Quantidade
+                      </Typography>
+                    </TableCell>
+                  </TableRow>
+                </TableHead>
 
-    /* Validações */
-    const textLengthValidator = (event, minLength) => {
-        let text = textLengthValidation(event, minLength)
-        if (!text.isValid) {
-            setTextLengthIsNotValid(true);
-            setTextLengthValidationSmall((minLength - text.textLength) == 1 ? `Necessário +${minLength - text.textLength} caractere` : `Necessário +${minLength - text.textLength} caracteres`);
-        } else {
-            setTextLengthIsNotValid(false);
-            setTextLengthValidationSmall("");
-        }
-    }
+                <TableBody>
+                  {apiData.map((data, index) => (
+                    <TableRow key={data.periodo} sx={{ backgroundColor: index % 2 === 0 ? "#f5f5f5" : "#ffffff" }}>
+                      <TableCell color="primary">
+                        <Typography variant="body1" component="p" align="center" color="textSecondary">
+                          {data.periodo.replace(/[\[\],]/g, (match) => (match === "," ? ", " : ""))}
+                        </Typography>
+                      </TableCell>
 
-    /* Renderização da tela */
-    return (
-        <Grid container spacing={2} alignContent="center">
-            <Grid item xs={12}>
-                <h2>Busca por nome</h2>
-            </Grid>
-
-            <Grid item xs={12} sm={6} container alignItems="center">
-                <SimpleInputComponent
-                    type={"text"}
-                    value={name}
-                    fnOnChange={handleNameChange}
-                    fnOnKeyUp={(event) => textLengthValidator(event, 3)}
-                    smallDescription={textLengthValidationSmall}
-                    style={{ width: '100%' }}
-                />
-                <SimpleButtonStyledComponent
-                    label="Buscar nome"
-                    fn={handleButtonClicked}
-                    disabled={textLengthIsNotValid}
-                />
-            </Grid>
-
-
-            <Grid item xs={12}>
-                <div className={styles.div}>
-
-                    {
-                        (requestValid != null) ?
-                            <h2>Informações sobre o nome: {lastNameSearched}</h2>
-                            : <EmptyComponent />
-                    }
-
-                    {
-                        isLoading ?
-                            <LoadingSkeletonComponent
-                                exibeThreeNamesCardSkeleton={false}
-                                exibeNameDataCardSkeleton={true}
-                            />
-                            : requestValid
-                                ? <table>
-                                    <thead>
-                                        <tr>
-                                            <td>Periodo</td>
-                                            <td>Quantidade</td>
-                                        </tr>
-                                    </thead>
-
-                                    <tbody>
-                                        {apiData.map(
-                                            data =>
-                                                <tr key={data.periodo}>
-                                                    <td>{data.periodo}</td>
-                                                    <td>{formatNumberWithDots(data.frequencia)}</td>
-                                                </tr>
-                                        )}
-                                    </tbody>
-
-                                </table>
-                                : (requestValid == null) ?
-                                    <EmptyComponent />
-                                    : <ErrorTextComponent
-                                        title={`O nome ${lastNameSearched} não foi encontrado`}
-                                        description="Escolha outro nome e tente novamente."
-                                    />
-                    }
-                </div>
-
-            </Grid>
-        </Grid>
-    );
+                      <TableCell>
+                        <Typography variant="body1" component="p" align="center" color="textSecondary">
+                          {formatNumberWithDots(data.frequencia)}
+                        </Typography>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            ) : requestValid == null ? (
+              <EmptyComponent />
+            ) : (
+              <ErrorTextComponent title={`O nome ${lastNameSearched} não foi encontrado`} description="Escolha outro nome e tente novamente." />
+            )}
+          </div>
+        </Card>
+      </Grid>
+    </Grid>
+  );
 }
 
 export default NameSection;
