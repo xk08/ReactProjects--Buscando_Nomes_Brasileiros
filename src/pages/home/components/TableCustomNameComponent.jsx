@@ -7,11 +7,11 @@ import { Grid } from '@mui/material';
 
 const rankingNumber = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
 
-function TableTenNamesComponent(props) {
+function TableCustomNamesComponent(props) {
   return (
     <Grid container spacing={2}>
       <Grid item xs={12}>
-        <h2>Top 10 nomes brasileiros filtrados</h2>
+        <h2>Top {props.nRegisters} nomes brasileiros filtrados</h2>
       </Grid>
 
       {props.isLoading ? (
@@ -48,4 +48,4 @@ function TableTenNamesComponent(props) {
   );
 }
 
-export default TableTenNamesComponent;
+export default TableCustomNamesComponent;

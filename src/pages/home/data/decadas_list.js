@@ -41,4 +41,4 @@ const decadasList = [
     }
 ]
 
-export default  decadasList;
+export default decadasList;

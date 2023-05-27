@@ -3,7 +3,7 @@ import customFetch from '../../../../global/Api/custom_fetch';
 import { apiBaseUrlIbge } from '../../../../global/Api/api_config';
 
 import TableThreeNamesComponent from '../../components/TableThreeNameComponent';
-import TableTenNamesComponent from '../../components/TableTenNameComponent';
+import TableCustomNamesComponent from '../../components/TableCustomNameComponent';
 import EmptyComponent from '../../../../global/components/EmptyComponent';
 import SimpleButtonComponent from '../../../../global/components/buttons/SimpleButtonComponent';
 import RankingFiltersComponent from '../../components/RankingFiltersComponent';
@@ -15,15 +15,26 @@ function RankingSection() {
     const [apiRankingThreeNames, setApiRankingThreeNames] = useState([]);
 
     const [apiDataOk, setApiDataOk] = useState(false);
-    const [isLoading, setIsLoading] = useState(false);
     const [showTenRankingSection, setShowTenRankingSection] = useState(false);
 
-    const [sexChild, setSexChild] = useState();
-    const [decadeChild, setDecadeChild] = useState();
-    const [localityChild, setLocalityChild] = useState(); /// 3300100 (São Borja)
+    const [sexChild, setSexChild] = useState("");
+    const [decadeChild, setDecadeChild] = useState("");
+    const [localitiesStatesSelectedChild, setLocalitiesStatesSelectedChild] = useState("");
+    const [localityChild, setLocalityChild] = useState("");
+
+    const [isLoadingRankingNames, setIsLoadingRankingNames] = useState(false);
+    const [isLoadingLocalitiesStates, setIsLoadingLocalitiesStates] = useState(false);
+
+    const [localitiesStatesChild, setLocalitiesStatesChild] = useState([]);
+    const [localitiesCitiesChild, setLocalitiesCitiesChild] = useState([]);
+
+    const [nRegistersState, setNRegistersState] = useState(10);
+    const [nRegistersOldState, setNRegistersOldState] = useState(10);
+
 
     useEffect(() => {
         findRankingNamesInApi();
+        findLocalitiesStatesInApi();
     }, []);
 
     const handleShowSectionTopTenNames = () => {
@@ -38,21 +49,54 @@ function RankingSection() {
         setDecadeChild(e.target.value);
     }
 
+    const handleChangeNRegistersChild = (e) => {
+        setNRegistersState(e.target.value);
+    }
+
     const handleChangeLocalityChild = (e) => {
         setLocalityChild(e.target.value);
+    }
+
+    const handleChangeLocalitiesStatesSelectedChild = (e) => {
+        setLocalitiesStatesSelectedChild(e.target.value);
+        handleChangeLocalityChild(e)
     }
 
     const handleClearRankingChildrenFilters = () => {
         setSexChild("");
         setDecadeChild("");
         setLocalityChild("");
-        handleExecuteFilterInsideComponent("", "", "");
+        setLocalitiesStatesSelectedChild("");
+        setNRegistersState(10);
+        handleExecuteFilterInsideComponent("", "", "", 10);
+    }
+
+    const verifyStatesAndDisableButton = () => {
+        return (sexChild || decadeChild || localityChild || nRegistersState !== 10) ? false : true
+    }
+
+    const findLocalitiesStatesInApi = async () => {
+
+        setIsLoadingLocalitiesStates(true)
+        const baseUrl = `${apiBaseUrlIbge}/v1/localidades/estados`
+        let response = await customFetch(baseUrl, null, "Buscando estados brasileiros [UFs]");
+
+        if (response.status == 200) {
+            if (response.data.length > 0) {
+                setLocalitiesStatesChild(response.data);
+            } else {
+                setLocalitiesStatesChild([]);
+            }
+        } else {
+            setLocalitiesStatesChild([]);
+        }
+        setIsLoadingLocalitiesStates(false);
     }
 
 
-    const handleExecuteFilterInsideComponent = async (sex, decade, locality) => {
+    const handleExecuteFilterInsideComponent = async (sex, decade, locality, registersQtd) => {
 
-        /// TODO: Pensar em uma lógica melhor (menos verbosa) pra essa verificação
+        setNRegistersOldState(registersQtd)
 
         /// sex - decade - locality
         if (sex && decade && locality) {
@@ -78,19 +122,15 @@ function RankingSection() {
         }
         else {
             await findRankingNamesInApi();
-
         }
     }
 
     const findRankingNamesInApi = async (filter) => {
 
-        setIsLoading(true)
-
+        setIsLoadingRankingNames(true)
         const baseUrl = defineBaseUrlBasedOnFilters(filter)
+        let response = await customFetch(baseUrl, null, "Buscando o Ranking de Nomes");
 
-        let response = await customFetch(baseUrl);
-
-        /// Atrasando o processamento da resposta, para melhorar a UX deste recurso.
         setTimeout(async () => {
 
             if (response.status == 200 || response.status == 201) {
@@ -102,7 +142,7 @@ function RankingSection() {
             } else {
                 setApiDataOk(false);
             }
-            setIsLoading(false);
+            setIsLoadingRankingNames(false);
 
         }, 1300);
     }
@@ -110,8 +150,6 @@ function RankingSection() {
     const defineBaseUrlBasedOnFilters = (filter) => {
 
         let baseUrlWithFilterSeted = "";
-
-        /// TODO: Pensar em uma lógica melhor (menos verbosa) pra essa verificação
 
         switch (filter) {
 
@@ -152,7 +190,8 @@ function RankingSection() {
 
     const defineFilters = (responseDataApi) => {
         try {
-            setApiRankingTenNames(responseDataApi.filter(data => (data.ranking >= 1 && data.ranking <= 10)));
+            // TODO: Ajustar o estado quando o usuario limpa o filtro, está pegando o estado anterior
+            setApiRankingTenNames(responseDataApi.filter(data => (data.ranking >= 1 && data.ranking <= nRegistersState)));
             setApiRankingThreeNames(responseDataApi.filter(data => (data.ranking >= 1 && data.ranking <= 3)))
             setApiDataOk(true);
         } catch (_) {
@@ -166,49 +205,62 @@ function RankingSection() {
             <TableThreeNamesComponent
                 apiRankingThreeNames={apiRankingThreeNames}
                 apiDataOk={apiDataOk}
-                isLoading={isLoading}
+                isLoading={isLoadingRankingNames}
             />
+
+            <br />
+
+            {
+                (apiDataOk) ?
+                    <RankingFiltersComponent
+
+                        sex={sexChild}
+                        decade={decadeChild}
+                        locality={localityChild}
+                        localitiesStates={localitiesStatesChild}
+                        localitiesStatesSelected={localitiesStatesSelectedChild}
+                        nRegistersState={nRegistersState}
+
+                        handleChangeSex={handleChangeSexChild}
+                        handleChangeDecade={handleChangeDecadeChild}
+                        handleChangeNRegisters={handleChangeNRegistersChild}
+                        handleChangeLocality={handleChangeLocalityChild}
+                        handleChangeLocalitiesStatesSelected={handleChangeLocalitiesStatesSelectedChild}
+                        handleClearRankingChildrenFilters={handleClearRankingChildrenFilters}
+
+                        isLoadingLocalitiesStates={isLoadingLocalitiesStates}
+
+                        disabled={verifyStatesAndDisableButton()}
+
+                        fnOnClick={
+                            () => handleExecuteFilterInsideComponent(sexChild, decadeChild, localityChild, nRegistersState)
+                        }
+                    />
+                    : <EmptyComponent />
+            }
+
+
 
             {/* TOP 10 NOMES BRASILEIROS*/}
             {
                 showTenRankingSection ?
-                    <TableTenNamesComponent
+                    <TableCustomNamesComponent
                         apiRankingTenNames={apiRankingTenNames}
                         apiDataOk={apiDataOk}
-                        isLoading={isLoading}
+                        isLoading={isLoadingRankingNames}
+                        nRegisters={nRegistersOldState}
                     />
                     : <EmptyComponent />
             }
 
             <br />
-            {
-                (apiDataOk && showTenRankingSection) ?
-                    <RankingFiltersComponent
-                        sex={sexChild}
-                        decade={decadeChild}
-                        locality={localityChild}
-
-                        handleChangeSex={handleChangeSexChild}
-                        handleChangeDecade={handleChangeDecadeChild}
-                        handleChangeLocality={handleChangeLocalityChild}
-
-                        disabled={
-                            (sexChild != "" || decadeChild != "" || localityChild != "") ? false : true
-                        }
-
-                        fnOnClick={
-                            () => handleExecuteFilterInsideComponent(sexChild, decadeChild, localityChild)
-                        }
-                    />
-                    : <EmptyComponent />
-            }
             <br />
 
             {
                 apiDataOk ?
                     <SimpleButtonComponent
-                        label={!showTenRankingSection ? "Ver top 10 nomes Brasileiros"
-                            : "Fechar top 10 nomes Brasileiros"}
+                        label={!showTenRankingSection ? `Ver top ${nRegistersOldState} nomes Brasileiros`
+                            : `Fechar top ${nRegistersOldState} nomes Brasileiros`}
                         fn={handleShowSectionTopTenNames} />
                     : <EmptyComponent />
             }
@@ -216,15 +268,6 @@ function RankingSection() {
             <br />
             <br />
 
-            <SimpleButtonComponent
-                label="Limpar filtros"
-                fn={handleClearRankingChildrenFilters}
-                disabled={
-                    (sexChild != "" || decadeChild != "" || localityChild != "") ? false : true
-                }
-            />
-
-            <br />
 
         </>
     );
