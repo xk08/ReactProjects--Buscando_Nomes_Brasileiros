@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import customFetch from '../../../../global/Api/custom_fetch';
+import { apiBaseUrlIbge } from '../../../../global/Api/api_config';
 
 import TableThreeNamesComponent from '../../components/TableThreeNameComponent';
 import TableTenNamesComponent from '../../components/TableTenNameComponent';
@@ -6,94 +8,76 @@ import EmptyComponent from '../../../../global/components/EmptyComponent';
 import SimpleButtonComponent from '../../../../global/components/buttons/SimpleButtonComponent';
 import RankingFiltersComponent from '../../components/RankingFiltersComponent';
 
-import customFetch from '../../../../global/Api/custom_fetch';
-import { apiBaseUrlIbge } from '../../../../global/Api/api_config';
-
 
 function RankingSection() {
 
-    /// Estado dos array de top nomes
     const [apiRankingTenNames, setApiRankingTenNames] = useState([]);
     const [apiRankingThreeNames, setApiRankingThreeNames] = useState([]);
 
-
-    /// Estados booleanos de controle dos filtros
     const [apiDataOk, setApiDataOk] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
-    const [buttonFilterIsDisabled, setButtonFilterIsDisabled] = useState(false); /// @@@ Rever este fittro (deve estar habilitado, se pelo menos 1 dos filtros estiver marcado)
     const [showTenRankingSection, setShowTenRankingSection] = useState(false);
 
+    const [sexChild, setSexChild] = useState();
+    const [decadeChild, setDecadeChild] = useState();
+    const [localityChild, setLocalityChild] = useState(); /// 3300100 (São Borja)
 
-    /// Estados dos componentes filhos: Radio Options (M ou F)
-    const [sexoChild, setSexoChild] = useState();
-
-    /// Estados dos componentes filhos: Década
-    const [decadaChild, setDecadaChild] = useState();
-
-    /// Estados dos componentes filhos: Localidade
-    const [localidadeChild, setLocalidadeChild] = useState(); /// 3300100 (São Borja)
-
-
-
-    /// Executa automáticamente ao montar a seção (apenas 1x)
     useEffect(() => {
         findRankingNamesInApi();
     }, []);
 
-
-    /// Funções Handle que alteram os estados
     const handleShowSectionTopTenNames = () => {
         setShowTenRankingSection(!showTenRankingSection)
     }
 
-    const handleChangeSexoChild = (e) => {
-        setSexoChild(e.target.value);
+    const handleChangeSexChild = (e) => {
+        setSexChild(e.target.value);
     }
 
-    const handleChangeDecadaChild = (e) => {
-        setDecadaChild(e.target.value);
+    const handleChangeDecadeChild = (e) => {
+        setDecadeChild(e.target.value);
     }
 
-    const handleChangeLocalidadeChild = (e) => {
-        setLocalidadeChild(e.target.value);
+    const handleChangeLocalityChild = (e) => {
+        setLocalityChild(e.target.value);
     }
 
     const handleClearRankingChildrenFilters = () => {
-        setSexoChild("");
-        setDecadaChild("");
-        setLocalidadeChild("");
+        setSexChild("");
+        setDecadeChild("");
+        setLocalityChild("");
         handleExecuteFilterInsideComponent("", "", "");
     }
 
 
-    const handleExecuteFilterInsideComponent = (sexo, decada, localidade) => {
+    const handleExecuteFilterInsideComponent = async (sex, decade, locality) => {
 
         /// TODO: Pensar em uma lógica melhor (menos verbosa) pra essa verificação
 
-        /// SEXO - DECADA - LOCALIDADE
-        if (sexo && decada && localidade) {
-            findRankingNamesInApi("sexo&decada&localidade");
-            /// DECADA - LOCALIDADE
-        } else if (decada && localidade) {
-            findRankingNamesInApi("decada&localidade");
-            /// SEXO - LOCALIDADE
-        } else if (sexo && localidade) {
-            findRankingNamesInApi("sexo&localidade");
-            /// SEXO - DECADA
-        } else if (sexo && decada) {
-            findRankingNamesInApi("sexo&decada");
-            /// LOCALIDADE
-        } else if (localidade) {
-            findRankingNamesInApi("localidade");
-            /// DECADA
-        } else if (decada) {
-            findRankingNamesInApi("decada");
-            /// SEXO
-        } else if (sexo) {
-            findRankingNamesInApi("sexo");
+        /// sex - decade - locality
+        if (sex && decade && locality) {
+            await findRankingNamesInApi("sex&decade&locality");
+            /// decade - locality
+        } else if (decade && locality) {
+            await findRankingNamesInApi("decade&locality");
+            /// sex - locality
+        } else if (sex && locality) {
+            await findRankingNamesInApi("sex&locality");
+            /// sex - decade
+        } else if (sex && decade) {
+            await findRankingNamesInApi("sex&decade");
+            /// locality
+        } else if (locality) {
+            await findRankingNamesInApi("locality");
+            /// decade
+        } else if (decade) {
+            await findRankingNamesInApi("decade");
+            /// sex
+        } else if (sex) {
+            await findRankingNamesInApi("sex");
         }
         else {
-            findRankingNamesInApi();
+            await findRankingNamesInApi();
 
         }
     }
@@ -131,32 +115,32 @@ function RankingSection() {
 
         switch (filter) {
 
-            case "sexo":
-                baseUrlWithFilterSeted = `${apiBaseUrlIbge}/v2/censos/nomes/ranking/?sexo=${sexoChild}`;
+            case "sex":
+                baseUrlWithFilterSeted = `${apiBaseUrlIbge}/v2/censos/nomes/ranking/?sexo=${sexChild}`;
                 break;
 
-            case "decada":
-                baseUrlWithFilterSeted = `${apiBaseUrlIbge}/v2/censos/nomes/ranking/?decada=${decadaChild}`;
+            case "decade":
+                baseUrlWithFilterSeted = `${apiBaseUrlIbge}/v2/censos/nomes/ranking/?decada=${decadeChild}`;
                 break;
 
-            case "localidade":
-                baseUrlWithFilterSeted = `${apiBaseUrlIbge}/v2/censos/nomes/ranking/?localidade=${localidadeChild}`;
+            case "locality":
+                baseUrlWithFilterSeted = `${apiBaseUrlIbge}/v2/censos/nomes/ranking/?localidade=${localityChild}`;
                 break;
 
-            case "sexo&decada":
-                baseUrlWithFilterSeted = `${apiBaseUrlIbge}/v2/censos/nomes/ranking/?sexo=${sexoChild}&decada=${decadaChild}`;
+            case "sex&decade":
+                baseUrlWithFilterSeted = `${apiBaseUrlIbge}/v2/censos/nomes/ranking/?sexo=${sexChild}&decada=${decadeChild}`;
                 break;
 
-            case "sexo&localidade":
-                baseUrlWithFilterSeted = `${apiBaseUrlIbge}/v2/censos/nomes/ranking/?sexo=${sexoChild}&localidade=${localidadeChild}`;
+            case "sex&locality":
+                baseUrlWithFilterSeted = `${apiBaseUrlIbge}/v2/censos/nomes/ranking/?sexo=${sexChild}&localidade=${localityChild}`;
                 break;
 
-            case "decada&localidade":
-                baseUrlWithFilterSeted = `${apiBaseUrlIbge}/v2/censos/nomes/ranking/?decada=${decadaChild}&localidade=${localidadeChild}`;
+            case "decade&locality":
+                baseUrlWithFilterSeted = `${apiBaseUrlIbge}/v2/censos/nomes/ranking/?decada=${decadeChild}&localidade=${localityChild}`;
                 break;
 
-            case "sexo&decada&localidade":
-                baseUrlWithFilterSeted = `${apiBaseUrlIbge}/v2/censos/nomes/ranking/?sexo=${sexoChild}&decada=${decadaChild}&localidade=${localidadeChild}`;
+            case "sex&decade&locality":
+                baseUrlWithFilterSeted = `${apiBaseUrlIbge}/v2/censos/nomes/ranking/?sexo=${sexChild}&decada=${decadeChild}&localidade=${localityChild}`;
                 break;
 
             default:
@@ -186,43 +170,47 @@ function RankingSection() {
             />
 
             {/* TOP 10 NOMES BRASILEIROS*/}
-            {showTenRankingSection ?
-                <TableTenNamesComponent
-                    apiRankingTenNames={apiRankingTenNames}
-                    apiDataOk={apiDataOk}
-                    isLoading={isLoading}
-                />
-                : <EmptyComponent />}
+            {
+                showTenRankingSection ?
+                    <TableTenNamesComponent
+                        apiRankingTenNames={apiRankingTenNames}
+                        apiDataOk={apiDataOk}
+                        isLoading={isLoading}
+                    />
+                    : <EmptyComponent />
+            }
 
             <br />
-            {(apiDataOk && showTenRankingSection) ?
-                <RankingFiltersComponent
-                    /// Enviando estados via props
-                    sexo={sexoChild}
-                    decada={decadaChild}
-                    localidade={localidadeChild}
+            {
+                (apiDataOk && showTenRankingSection) ?
+                    <RankingFiltersComponent
+                        sex={sexChild}
+                        decade={decadeChild}
+                        locality={localityChild}
 
-                    /// Enviando funções de callback (que alteram os estados dos filhos)
-                    handleChangeSexo={handleChangeSexoChild}
-                    handleChangeDecada={handleChangeDecadaChild}
-                    handleChangeLocalidade={handleChangeLocalidadeChild}
+                        handleChangeSex={handleChangeSexChild}
+                        handleChangeDecade={handleChangeDecadeChild}
+                        handleChangeLocality={handleChangeLocalityChild}
 
-                    disabled={buttonFilterIsDisabled}
+                        disabled={
+                            (sexChild != "" || decadeChild != "" || localityChild != "") ? false : true
+                        }
 
-                    fnOnClick={
-                        () => handleExecuteFilterInsideComponent(sexoChild, decadaChild, localidadeChild)
-                    }
-                />
-                : <EmptyComponent />
+                        fnOnClick={
+                            () => handleExecuteFilterInsideComponent(sexChild, decadeChild, localityChild)
+                        }
+                    />
+                    : <EmptyComponent />
             }
             <br />
 
-            {apiDataOk ?
-                <SimpleButtonComponent
-                    label={!showTenRankingSection ? "Ver top 10 nomes Brasileiros"
-                        : "Fechar top 10 nomes Brasileiros"}
-                    fn={handleShowSectionTopTenNames} />
-                : <EmptyComponent />
+            {
+                apiDataOk ?
+                    <SimpleButtonComponent
+                        label={!showTenRankingSection ? "Ver top 10 nomes Brasileiros"
+                            : "Fechar top 10 nomes Brasileiros"}
+                        fn={handleShowSectionTopTenNames} />
+                    : <EmptyComponent />
             }
 
             <br />
@@ -231,7 +219,9 @@ function RankingSection() {
             <SimpleButtonComponent
                 label="Limpar filtros"
                 fn={handleClearRankingChildrenFilters}
-                disabled={false}
+                disabled={
+                    (sexChild != "" || decadeChild != "" || localityChild != "") ? false : true
+                }
             />
 
             <br />
