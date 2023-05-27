@@ -1,7 +1,7 @@
 import SimpleButtonComponent from "../../../global/components/buttons/SimpleButtonComponent"
 import decadasList from "../data/decadas_list"
 
-function RankingFiltersComponent({ sexo, handleChangeSexo, decada, handleChangeDecada, disabled, fnOnClick }) {
+function RankingFiltersComponent({ sex, handleChangeSex, decade, handleChangeDecade, disabled, fnOnClick }) {
 
     return (
         <>
@@ -14,8 +14,8 @@ function RankingFiltersComponent({ sexo, handleChangeSexo, decada, handleChangeD
                     name="radioGroup"
                     value="M"
                     id="M"
-                    checked={sexo == "M"}
-                    onChange={handleChangeSexo}
+                    checked={sex == "M"}
+                    onChange={handleChangeSex}
                 />
                 <label htmlFor="M">Maculino</label>
 
@@ -25,8 +25,8 @@ function RankingFiltersComponent({ sexo, handleChangeSexo, decada, handleChangeD
                     name="radioGroup"
                     value="F"
                     id="F"
-                    checked={sexo == "F"}
-                    onChange={handleChangeSexo}
+                    checked={sex == "F"}
+                    onChange={handleChangeSex}
                 />
                 <label htmlFor="F">Feminino</label>
 
@@ -42,8 +42,8 @@ function RankingFiltersComponent({ sexo, handleChangeSexo, decada, handleChangeD
 
             <div>
                 <select
-                    value={decada}
-                    onChange={handleChangeDecada}>
+                    value={decade}
+                    onChange={handleChangeDecade}>
                     {decadasList.map((option) => (
                         <option
                             key={option.value}
