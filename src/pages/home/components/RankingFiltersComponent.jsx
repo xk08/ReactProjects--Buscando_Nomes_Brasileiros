@@ -28,6 +28,8 @@ function RankingFiltersComponent(
 ) {
 
     return (
+
+        /* TODO: Trocar o Select pelo AutoComplete -> https://mui.com/material-ui/react-autocomplete/#combo-box */
         <Grid container wrap="wrap">
             <Grid item xs={12}>
                 <h2>Filtros personalizados</h2>

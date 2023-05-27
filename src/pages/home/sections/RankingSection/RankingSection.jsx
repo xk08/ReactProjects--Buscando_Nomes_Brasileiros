@@ -5,17 +5,17 @@ import { apiBaseUrlIbge } from '../../../../global/Api/api_config';
 import TableThreeNamesComponent from '../../components/TableThreeNameComponent';
 import TableCustomNamesComponent from '../../components/TableCustomNameComponent';
 import EmptyComponent from '../../../../global/components/EmptyComponent';
-import SimpleButtonComponent from '../../../../global/components/buttons/SimpleButtonComponent';
 import RankingFiltersComponent from '../../components/RankingFiltersComponent';
-
+import { Grid, Button } from "@mui/material";
+import ArrowDropDownCircleIcon from '@mui/icons-material/ArrowDropDownCircle';
 
 function RankingSection() {
 
-    const [apiRankingTenNames, setApiRankingTenNames] = useState([]);
+    const [apiRankingCustomNames, setApiRankingCustomNames] = useState([]);
     const [apiRankingThreeNames, setApiRankingThreeNames] = useState([]);
 
     const [apiDataOk, setApiDataOk] = useState(false);
-    const [showTenRankingSection, setShowTenRankingSection] = useState(false);
+    const [showCustomRankingSection, setShowCustomRankingSection] = useState(false);
 
     const [sexChild, setSexChild] = useState("");
     const [decadeChild, setDecadeChild] = useState("");
@@ -40,8 +40,8 @@ function RankingSection() {
         findLocalitiesStatesInApi();
     }, []);
 
-    const handleShowSectionTopTenNames = () => {
-        setShowTenRankingSection(!showTenRankingSection)
+    const handleShowSectionTopCustomsNames = () => {
+        setShowCustomRankingSection(!showCustomRankingSection)
     }
 
     const handleChangeSexChild = (e) => {
@@ -76,8 +76,9 @@ function RankingSection() {
         setDecadeChild("");
         setLocalityChild("");
         setLocalitiesStatesSelectedChild("");
-        setNRegistersState(10);
-        handleExecuteFilterInsideComponent("", "", "", 10);
+        setLocalitiesCitiesSelectedChild("");
+        setNRegistersState(9);
+        handleExecuteFilterInsideComponent("", "", "", 9);
     }
 
     const verifyStatesAndDisableButton = () => {
@@ -125,25 +126,24 @@ function RankingSection() {
 
         setNRegistersOldState(registersQtd)
 
-        /// sex - decade - locality
         if (sex && decade && locality) {
             await findRankingNamesInApi("sex&decade&locality");
-            /// decade - locality
+
         } else if (decade && locality) {
             await findRankingNamesInApi("decade&locality");
-            /// sex - locality
+
         } else if (sex && locality) {
             await findRankingNamesInApi("sex&locality");
-            /// sex - decade
+
         } else if (sex && decade) {
             await findRankingNamesInApi("sex&decade");
-            /// locality
+
         } else if (locality) {
             await findRankingNamesInApi("locality");
-            /// decade
+
         } else if (decade) {
             await findRankingNamesInApi("decade");
-            /// sex
+
         } else if (sex) {
             await findRankingNamesInApi("sex");
         }
@@ -218,7 +218,7 @@ function RankingSection() {
     const defineFilters = (responseDataApi) => {
         try {
             // TODO: Ajustar o estado quando o usuario limpa o filtro, está pegando o estado anterior
-            setApiRankingTenNames(responseDataApi.filter(data => (data.ranking >= 1 && data.ranking <= nRegistersState)));
+            setApiRankingCustomNames(responseDataApi.filter(data => (data.ranking >= 1 && data.ranking <= nRegistersState)));
             setApiRankingThreeNames(responseDataApi.filter(data => (data.ranking >= 1 && data.ranking <= 3)))
             setApiDataOk(true);
         } catch (_) {
@@ -228,13 +228,6 @@ function RankingSection() {
 
     return (
         <>
-
-            {/* Retirar depois! */}
-            <div>
-                <h3>UF: {localitiesStatesSelectedChild}</h3>
-                <h3>Cidade: {localitiesCitiesSelectedChild}</h3>
-            </div>
-
             {/* TOP 3 NOMES BRASILEIROS*/}
             <TableThreeNamesComponent
                 apiRankingThreeNames={apiRankingThreeNames}
@@ -279,33 +272,50 @@ function RankingSection() {
 
             <br />
 
-            {/* TOP CUSTOM NOMES BRASILEIROS*/}
-            {
-                showTenRankingSection ?
-                    <TableCustomNamesComponent
-                        apiRankingTenNames={apiRankingTenNames}
-                        apiDataOk={apiDataOk}
-                        isLoading={isLoadingRankingNames}
-                        nRegisters={nRegistersOldState}
-                    />
-                    : <EmptyComponent />
-            }
-
-            <br />
-
             {
                 apiDataOk ?
-                    <SimpleButtonComponent
-                        label={!showTenRankingSection ? `Ver top ${nRegistersOldState} nomes`
-                            : `Fechar top ${nRegistersOldState} nomes`}
-                        fn={handleShowSectionTopTenNames} />
+                    <Grid item xs={12} onClick={handleShowSectionTopCustomsNames} style={{ cursor: 'pointer' }}>
+                        {
+                            showCustomRankingSection ?
+                                <Button
+                                    variant="text"
+                                    endIcon={<ArrowDropDownCircleIcon
+                                        style={{ transform: 'rotate(180deg)' }} />}
+                                    style={{ fontSize: '17px' }}
+                                >
+                                    Fechar top {nRegistersOldState} nomes filtrados
+                                </Button>
+                                :
+                                <Button
+                                    variant="text"
+                                    endIcon={<ArrowDropDownCircleIcon />}
+                                    style={{ fontSize: '17px' }}
+                                >
+                                    Expandir top {nRegistersOldState} nomes filtrados
+                                </Button>
+                        }
+                    </Grid>
                     : <EmptyComponent />
             }
 
-            <br />
-            <br />
+            {/* TOP CUSTOM NOMES BRASILEIROS*/}
+            {
+                showCustomRankingSection ?
+                    <>
+                        <br />
 
+                        <TableCustomNamesComponent
+                            apiRankingCustomNames={apiRankingCustomNames}
+                            apiDataOk={apiDataOk}
+                            isLoading={isLoadingRankingNames}
+                            nRegisters={nRegistersOldState}
+                            handleShowSectionTopCustomsNames={handleShowSectionTopCustomsNames}
 
+                        />
+
+                    </>
+                    : <EmptyComponent />
+            }
         </>
     );
 }

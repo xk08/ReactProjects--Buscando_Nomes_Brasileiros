@@ -1,11 +1,11 @@
-// import "./SimpleButtonComponent.module.css";
+import { Button } from '@mui/material';
 
 function SimpleButtonComponent({ label, id, className, fn, disabled }) {
-    return <button
+    return <Button variant="contained"
         id={id}
         className={className}
         onClick={fn}
         disabled={disabled}
-    >{label}</button>
+    >{label}</Button>
 }
 export default SimpleButtonComponent;
