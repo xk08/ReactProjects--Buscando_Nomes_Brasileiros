@@ -1,9 +1,5 @@
 const decadasList = [
     {
-        label: "Selecione...",
-        value: undefined,
-    },
-    {
         label: "1930",
         value: "1930",
     },

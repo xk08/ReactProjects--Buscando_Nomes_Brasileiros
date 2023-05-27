@@ -1,5 +1,5 @@
 const apiBaseUrlIbge = "https://servicodados.ibge.gov.br/api";
-const executeOnDebugMode = false;
+const executeOnDebugMode = true;
 
 
 export { apiBaseUrlIbge, executeOnDebugMode }; 

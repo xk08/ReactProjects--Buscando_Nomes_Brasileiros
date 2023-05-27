@@ -1,9 +1,5 @@
 const nRegistersList = [
     {
-        label: "Selecione...",
-        value: undefined,
-    },
-    {
         label: "5",
         value: "5",
     },

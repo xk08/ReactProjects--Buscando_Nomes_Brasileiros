@@ -19,17 +19,20 @@ function RankingSection() {
 
     const [sexChild, setSexChild] = useState("");
     const [decadeChild, setDecadeChild] = useState("");
-    const [localitiesStatesSelectedChild, setLocalitiesStatesSelectedChild] = useState("");
     const [localityChild, setLocalityChild] = useState("");
 
-    const [isLoadingRankingNames, setIsLoadingRankingNames] = useState(false);
-    const [isLoadingLocalitiesStates, setIsLoadingLocalitiesStates] = useState(false);
-
+    const [localitiesStatesSelectedChild, setLocalitiesStatesSelectedChild] = useState("");
+    const [localitiesCitiesSelectedChild, setLocalitiesCitiesSelectedChild] = useState("");
     const [localitiesStatesChild, setLocalitiesStatesChild] = useState([]);
     const [localitiesCitiesChild, setLocalitiesCitiesChild] = useState([]);
 
-    const [nRegistersState, setNRegistersState] = useState(10);
-    const [nRegistersOldState, setNRegistersOldState] = useState(10);
+    const [isLoadingRankingNames, setIsLoadingRankingNames] = useState(false);
+    const [isLoadingLocalitiesStates, setIsLoadingLocalitiesStates] = useState(false);
+    const [isLoadingLocalitiesCities, setIsLoadingLocalitiesCities] = useState(false);
+
+
+    const [nRegistersState, setNRegistersState] = useState(9);
+    const [nRegistersOldState, setNRegistersOldState] = useState(9);
 
 
     useEffect(() => {
@@ -59,7 +62,13 @@ function RankingSection() {
 
     const handleChangeLocalitiesStatesSelectedChild = (e) => {
         setLocalitiesStatesSelectedChild(e.target.value);
-        handleChangeLocalityChild(e)
+        handleChangeLocalityChild(e);
+        findLocalitiesCitiesInApi(e.target.value); /// TODO: Aprender a pegar o estado atualizado, para não ter que passar por parametro
+    }
+
+    const handleChangeLocalitiesCitiesSelectedChild = (e) => {
+        setLocalitiesCitiesSelectedChild(e.target.value)
+        handleChangeLocalityChild(e);
     }
 
     const handleClearRankingChildrenFilters = () => {
@@ -72,11 +81,10 @@ function RankingSection() {
     }
 
     const verifyStatesAndDisableButton = () => {
-        return (sexChild || decadeChild || localityChild || nRegistersState !== 10) ? false : true
+        return (sexChild || decadeChild || localityChild || nRegistersState !== 9) ? false : true
     }
 
     const findLocalitiesStatesInApi = async () => {
-
         setIsLoadingLocalitiesStates(true)
         const baseUrl = `${apiBaseUrlIbge}/v1/localidades/estados`
         let response = await customFetch(baseUrl, null, "Buscando estados brasileiros [UFs]");
@@ -91,6 +99,25 @@ function RankingSection() {
             setLocalitiesStatesChild([]);
         }
         setIsLoadingLocalitiesStates(false);
+    }
+
+    const findLocalitiesCitiesInApi = async (uf) => {
+
+        setIsLoadingLocalitiesCities(true)
+        const baseUrl = `${apiBaseUrlIbge}/v1/localidades/estados/${uf}/municipios`
+        let response = await customFetch(baseUrl, null, "Buscando municipios brasileiros com base na UF");
+
+        if (response.status == 200) {
+            if (response.data.length > 0) {
+                setLocalitiesCitiesChild(response.data);
+            } else {
+                setLocalitiesCitiesChild([]);
+            }
+        } else {
+            setLocalitiesCitiesChild([]);
+        }
+
+        setIsLoadingLocalitiesCities(false);
     }
 
 
@@ -201,6 +228,13 @@ function RankingSection() {
 
     return (
         <>
+
+            {/* Retirar depois! */}
+            <div>
+                <h3>UF: {localitiesStatesSelectedChild}</h3>
+                <h3>Cidade: {localitiesCitiesSelectedChild}</h3>
+            </div>
+
             {/* TOP 3 NOMES BRASILEIROS*/}
             <TableThreeNamesComponent
                 apiRankingThreeNames={apiRankingThreeNames}
@@ -218,7 +252,9 @@ function RankingSection() {
                         decade={decadeChild}
                         locality={localityChild}
                         localitiesStates={localitiesStatesChild}
+                        localitiesCities={localitiesCitiesChild}
                         localitiesStatesSelected={localitiesStatesSelectedChild}
+                        localitiesCitiesSelected={localitiesCitiesSelectedChild}
                         nRegistersState={nRegistersState}
 
                         handleChangeSex={handleChangeSexChild}
@@ -226,9 +262,11 @@ function RankingSection() {
                         handleChangeNRegisters={handleChangeNRegistersChild}
                         handleChangeLocality={handleChangeLocalityChild}
                         handleChangeLocalitiesStatesSelected={handleChangeLocalitiesStatesSelectedChild}
+                        handleChangeLocalitiesCitiesSelected={handleChangeLocalitiesCitiesSelectedChild}
                         handleClearRankingChildrenFilters={handleClearRankingChildrenFilters}
 
                         isLoadingLocalitiesStates={isLoadingLocalitiesStates}
+                        isLoadingLocalitiesCities={isLoadingLocalitiesCities}
 
                         disabled={verifyStatesAndDisableButton()}
 
@@ -239,9 +277,9 @@ function RankingSection() {
                     : <EmptyComponent />
             }
 
+            <br />
 
-
-            {/* TOP 10 NOMES BRASILEIROS*/}
+            {/* TOP CUSTOM NOMES BRASILEIROS*/}
             {
                 showTenRankingSection ?
                     <TableCustomNamesComponent
@@ -254,13 +292,12 @@ function RankingSection() {
             }
 
             <br />
-            <br />
 
             {
                 apiDataOk ?
                     <SimpleButtonComponent
-                        label={!showTenRankingSection ? `Ver top ${nRegistersOldState} nomes Brasileiros`
-                            : `Fechar top ${nRegistersOldState} nomes Brasileiros`}
+                        label={!showTenRankingSection ? `Ver top ${nRegistersOldState} nomes`
+                            : `Fechar top ${nRegistersOldState} nomes`}
                         fn={handleShowSectionTopTenNames} />
                     : <EmptyComponent />
             }

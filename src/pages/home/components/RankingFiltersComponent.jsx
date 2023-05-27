@@ -1,150 +1,166 @@
 import SimpleButtonComponent from "../../../global/components/buttons/SimpleButtonComponent"
 import decadasList from "../data/decadas_list";
 import nRegisterList from "../data/n_registers_list";
+import sexList from "../data/sex_list";
 
-import { Grid, Radio, RadioGroup, FormControlLabel, Select, MenuItem, FormControl, InputLabel, FormLabel } from '@mui/material';
+import { Grid, Select, MenuItem, FormControl, InputLabel, Box } from '@mui/material';
 
 function RankingFiltersComponent(
     {
         sex,
         decade,
         localitiesStates,
+        localitiesCities,
         localitiesStatesSelected,
+        localitiesCitiesSelected,
         nRegistersState,
         handleChangeDecade,
         handleChangeNRegisters,
         handleChangeSex,
         handleChangeLocalitiesStatesSelected,
+        handleChangeLocalitiesCitiesSelected,
         isLoadingLocalitiesStates,
+        isLoadingLocalitiesCities,
         fnOnClick,
         disabled,
-        handleClearRankingChildrenFilters,
-        handleShowSectionTopTenNames
+        handleClearRankingChildrenFilters
     }
 ) {
 
     return (
-        <Grid container>
+        <Grid container wrap="wrap">
             <Grid item xs={12}>
                 <h2>Filtros personalizados</h2>
             </Grid>
 
-            <Grid item xs={12}>
-                <div style={{ display: 'flex', justifyContent: 'space-evenly', alignItems: 'center' }}>
+            <Grid item xs={12} sm={12}>
+                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                     <div>
-                        <FormLabel id="sex-label">Sexo</FormLabel>
-                    </div>
-
-                    <div>
-                        <InputLabel id="decade-label">Década</InputLabel>
-                    </div>
-
-                    <div>
-                        <InputLabel id="estate-label">Estado</InputLabel>
-                    </div>
-
-                    <div>
-                        <InputLabel id="estate-label">Nº Registros</InputLabel>
-                    </div>
-                </div>
-            </Grid>
-
-            <Grid item xs={12}>
-                <div style={{ display: 'flex', justifyContent: 'space-evenly', alignItems: 'center' }}>
-                    <div>
-                        <FormControl>
-                            <RadioGroup
-                                aria-labelledby="sex-label"
-                                name="sex"
+                        <FormControl sx={{ m: 1, minWidth: 150 }}>
+                            <InputLabel id="decade-label">Sexo</InputLabel>
+                            <Select
+                                labelId="decade-label"
+                                id="decade"
                                 value={sex}
                                 onChange={handleChangeSex}
+                                autoWidth
+                                label="decade"
                             >
-                                <FormControlLabel value="M" control={<Radio />} label="Masculino" />
-                                <FormControlLabel value="F" control={<Radio />} label="Feminino" />
-                            </RadioGroup>
+                                {sexList.map((option) => (
+                                    <MenuItem key={option.label} value={option.value}>{option.label}</MenuItem>
+                                ))}
+                            </Select>
                         </FormControl>
                     </div>
 
                     <div>
-                        <div>
-                            <FormControl sx={{ m: 1, minWidth: 150 }}>
-                                <Select
-                                    labelId="decade-label"
-                                    id="decade"
-                                    value={decade}
-                                    onChange={handleChangeDecade}
-                                    autoWidth
-                                    label="decade"
-                                >
-                                    {decadasList.map((option) => (
-                                        <MenuItem key={option.label} value={option.value}>{option.label}</MenuItem>
-                                    ))}
-                                </Select>
-                            </FormControl>
-                        </div>
-                    </div>
-
-                    <div>
-                        <div>
-                            <FormControl sx={{ m: 1, minWidth: 150 }}>
-                                <Select
-                                    labelId="estate-label"
-                                    id="estate"
-                                    value={localitiesStatesSelected}
-                                    onChange={handleChangeLocalitiesStatesSelected}
-                                    autoWidth
-                                    label="estate"
-                                    disabled={isLoadingLocalitiesStates}
-                                >
-                                    {
-                                        localitiesStates.map((option) => (
-                                            <MenuItem key={option.nome} value={option.id}>{option.nome}</MenuItem>
-                                        ))
-                                    }
-                                </Select>
-                            </FormControl>
-                        </div>
-                    </div>
-
-                    <div>
-                        <div>
-                            <FormControl sx={{ m: 1, minWidth: 150 }}>
-                                <Select
-                                    labelId="nRegister-label"
-                                    id="nRegister"
-                                    value={nRegistersState}
-                                    onChange={handleChangeNRegisters}
-                                    autoWidth
-                                    label="nRegister"
-                                >
-                                    {
-                                        nRegisterList.map((option) => (
-                                            <MenuItem key={option.label} value={option.value}>{option.label}</MenuItem>
-                                        ))
-                                    }
-                                </Select>
-                            </FormControl>
-                        </div>
+                        <FormControl sx={{ m: 1, minWidth: 150 }}>
+                            <InputLabel id="decade-label">Década</InputLabel>
+                            <Select
+                                labelId="decade-label"
+                                id="decade"
+                                value={decade}
+                                onChange={handleChangeDecade}
+                                autoWidth
+                                label="decade"
+                            >
+                                {decadasList.map((option) => (
+                                    <MenuItem key={option.label} value={option.value}>{option.label}</MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
                     </div>
                 </div>
             </Grid>
 
+            <Grid item xs={12} sm={12}>
+                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                    <div>
+                        <FormControl sx={{ m: 1, minWidth: 150 }}>
+                            <InputLabel id="estate-label">Estado</InputLabel>
+                            <Select
+                                labelId="estate-label"
+                                id="estate"
+                                value={localitiesStatesSelected}
+                                onChange={handleChangeLocalitiesStatesSelected}
+                                autoWidth
+                                label="estate"
+                                disabled={isLoadingLocalitiesStates}
+                            >
+                                {
+                                    localitiesStates.map((option) => (
+                                        <MenuItem key={option.nome} value={option.id}>{option.nome}</MenuItem>
+                                    ))
+                                }
+                            </Select>
+                        </FormControl>
+                    </div>
+
+
+                    {/* NOVO! */}
+                    <div>
+                        <FormControl sx={{ m: 1, minWidth: 150 }}>
+                            <InputLabel id="city-label">Cidade</InputLabel>
+                            <Select
+                                labelId="city-label"
+                                id="city"
+                                value={localitiesCitiesSelected}
+                                onChange={handleChangeLocalitiesCitiesSelected}
+                                autoWidth
+                                label="city"
+                                disabled={(isLoadingLocalitiesCities || !localitiesStatesSelected)}
+                            >
+                                {
+                                    localitiesCities.map((option) => (
+                                        <MenuItem key={option.nome} value={option.id}>{option.nome}</MenuItem>
+                                    ))
+                                }
+                            </Select>
+                        </FormControl>
+                    </div>
+                </div>
+            </Grid>
+
+            <Grid item xs={12} sm={12}>
+                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                    <div>
+                        <FormControl sx={{ m: 1, minWidth: 150 }}>
+                            <InputLabel id="nRegister-label">Nº Registros</InputLabel>
+                            <Select
+                                labelId="nRegister-label"
+                                id="nRegister"
+                                value={nRegistersState}
+                                onChange={handleChangeNRegisters}
+                                autoWidth
+                                label="nRegister"
+                            >
+                                {nRegisterList.map((option) => (
+                                    <MenuItem key={option.label} value={option.value}>{option.label}</MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                    </div>
+                </div>
+
+            </Grid>
+
             <Grid item xs={12}>
-                <SimpleButtonComponent
-                    key="ranking_filter_button"
-                    label="Filtrar busca"
-                    fn={fnOnClick}
-                    disabled={disabled}
-                />
+                <div style={{ display: 'flex', justifyContent: 'center', marginTop: '16px' }}>
+                    <SimpleButtonComponent
+                        key="ranking_filter_button"
+                        label="Filtrar busca"
+                        fn={fnOnClick}
+                        disabled={disabled}
+                    />
 
-                &nbsp;
-                &nbsp;
-
-                <SimpleButtonComponent
-                    label="Limpar filtros"
-                    fn={handleClearRankingChildrenFilters}
-                    disabled={disabled}
-                />
+                    <Box ml={2}>
+                        <SimpleButtonComponent
+                            label="Limpar filtros"
+                            fn={handleClearRankingChildrenFilters}
+                            disabled={disabled}
+                        />
+                    </Box>
+                </div>
             </Grid>
         </Grid>
     );
