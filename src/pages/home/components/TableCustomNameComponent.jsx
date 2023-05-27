@@ -5,15 +5,11 @@ import RankComponent from '../../../global/components/rank/RankComponent';
 import * as React from 'react';
 import { Grid } from '@mui/material';
 
-const rankingNumber = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+const rankingNumber = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 
-function TableTenNamesComponent(props) {
+function TableCustomNamesComponent(props) {
   return (
     <Grid container spacing={2}>
-      <Grid item xs={12}>
-        <h2>Top 10 nomes brasileiros filtrados</h2>
-      </Grid>
-
       {props.isLoading ? (
 
         <>
@@ -34,7 +30,7 @@ function TableTenNamesComponent(props) {
         </>
 
       ) : props.apiDataOk ? (
-        props.apiRankingTenNames.map((dados) => (
+        props.apiRankingCustomNames.map((dados) => (
           <RankComponent
             key={dados.ranking}
             ranking={dados.ranking}
@@ -48,4 +44,4 @@ function TableTenNamesComponent(props) {
   );
 }
 
-export default TableTenNamesComponent;
+export default TableCustomNamesComponent;

@@ -15,7 +15,10 @@ import LoadingSkeletonComponent from '../../../../global/components/animations/S
 
 import SimpleButtonStyledComponent from '../../../../global/components/buttons/SimpleButtonStyledComponent';
 
+import { Grid } from '@mui/material';
+
 import styles from "./NameSection.module.css";
+import TextField from "@mui/material/TextField";
 
 function NameSection() {
 
@@ -71,65 +74,74 @@ function NameSection() {
 
     /* Renderização da tela */
     return (
-        <div className={styles.div}>
-            <div>
+        <Grid container spacing={2} alignContent="center">
+            <Grid item xs={12}>
+                <h2>Busca por nome</h2>
+            </Grid>
+
+            <Grid item xs={12} sm={6} container alignItems="center">
                 <SimpleInputComponent
                     type={"text"}
                     value={name}
                     fnOnChange={handleNameChange}
                     fnOnKeyUp={(event) => textLengthValidator(event, 3)}
                     smallDescription={textLengthValidationSmall}
+                    style={{ width: '100%' }}
                 />
-
-                <br />
                 <SimpleButtonStyledComponent
                     label="Buscar nome"
                     fn={handleButtonClicked}
                     disabled={textLengthIsNotValid}
                 />
+            </Grid>
 
-            </div>
 
-            {
-                (requestValid != null) ?
-                    <h2>Informações sobre o nome: {lastNameSearched}</h2>
-                    : <EmptyComponent />
-            }
+            <Grid item xs={12}>
+                <div className={styles.div}>
 
-            {
-                isLoading ?
-                    <LoadingSkeletonComponent
-                        exibeThreeNamesCardSkeleton={false}
-                        exibeNameDataCardSkeleton={true}
-                    />
-                    : requestValid
-                        ? <table>
-                            <thead>
-                                <tr>
-                                    <td>Periodo</td>
-                                    <td>Quantidade</td>
-                                </tr>
-                            </thead>
+                    {
+                        (requestValid != null) ?
+                            <h2>Informações sobre o nome: {lastNameSearched}</h2>
+                            : <EmptyComponent />
+                    }
 
-                            <tbody>
-                                {apiData.map(
-                                    data =>
-                                        <tr key={data.periodo}>
-                                            <td>{data.periodo}</td>
-                                            <td>{formatNumberWithDots(data.frequencia)}</td>
-                                        </tr>
-                                )}
-                            </tbody>
-
-                        </table>
-                        : (requestValid == null) ?
-                            <EmptyComponent />
-                            : <ErrorTextComponent
-                                title={`O nome ${lastNameSearched} não foi encontrado`}
-                                description="Escolha outro nome e tente novamente."
+                    {
+                        isLoading ?
+                            <LoadingSkeletonComponent
+                                exibeThreeNamesCardSkeleton={false}
+                                exibeNameDataCardSkeleton={true}
                             />
-            }
-        </div>
+                            : requestValid
+                                ? <table>
+                                    <thead>
+                                        <tr>
+                                            <td>Periodo</td>
+                                            <td>Quantidade</td>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                        {apiData.map(
+                                            data =>
+                                                <tr key={data.periodo}>
+                                                    <td>{data.periodo}</td>
+                                                    <td>{formatNumberWithDots(data.frequencia)}</td>
+                                                </tr>
+                                        )}
+                                    </tbody>
+
+                                </table>
+                                : (requestValid == null) ?
+                                    <EmptyComponent />
+                                    : <ErrorTextComponent
+                                        title={`O nome ${lastNameSearched} não foi encontrado`}
+                                        description="Escolha outro nome e tente novamente."
+                                    />
+                    }
+                </div>
+
+            </Grid>
+        </Grid>
     );
 }
 
