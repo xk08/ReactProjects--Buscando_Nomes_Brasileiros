@@ -1,12 +1,14 @@
+import { Grid, Typography } from "@mui/material";
+
 function FooterComponent() {
-    return (
-        <div>
-            <br />
-            <br />
-            <h3>Rodapé da página</h3>
-            <br />
-            <br />
-        </div>
-    );
+  return (
+    <Grid content>
+      <Grid item xs={12}>
+        <Typography variant="h5" component="h2">
+          Rodapé da página
+        </Typography>
+      </Grid>
+    </Grid>
+  );
 }
 export default FooterComponent;
