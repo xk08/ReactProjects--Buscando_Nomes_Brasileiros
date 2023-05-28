@@ -1,30 +1,18 @@
 import EmptyComponent from "../../../global/components/EmptyComponent";
 import SimpleButtonComponent from "../../../global/components/buttons/SimpleButtonComponent";
+import TitleClosable from "../../../global/components/title-closable/TitleClosable";
 import decadasList from "../data/decadas_list";
 import nRegisterList from "../data/n_registers_list";
 import sexList from "../data/sex_list";
 import ArrowDropDownCircleIcon from "@mui/icons-material/ArrowDropDownCircle";
 import { Grid, Select, MenuItem, FormControl, InputLabel, Box, Typography, Button } from "@mui/material";
 
+// TODO: os states de abrir e fechar os títulos e de esconder os componentes foram passador por props, rever se nao seria melhor criar aqui mesmo
 function RankingFiltersComponent({ sex, decade, localitiesStates, isFiltersClosed, localitiesCities, localitiesStatesSelected, localitiesCitiesSelected, nRegistersState, handleChangeDecade, handleChangeNRegisters, handleChangeSex, handleChangeLocalitiesStatesSelected, handleChangeLocalitiesCitiesSelected, isLoadingLocalitiesStates, isLoadingLocalitiesCities, fnOnClick, disabled, handleClearRankingChildrenFilters, handleClosedFilters }) {
   return (
     /* TODO: Trocar o Select pelo AutoComplete -> https://mui.com/material-ui/react-autocomplete/#combo-box */
     <Grid container wrap="wrap">
-      <Grid item xs={12} onClick={handleClosedFilters}>
-        {!isFiltersClosed ? (
-          <Button variant="text" endIcon={<ArrowDropDownCircleIcon style={{ transform: "rotate(180deg)" }} />} style={{ fontSize: "18px", border: "none", outline: "none", color: "black" }}>
-            <Typography variant="h5" component="h2">
-              F<span style={{ textTransform: "lowercase" }}>iltros personalizados</span>
-            </Typography>
-          </Button>
-        ) : (
-          <Button variant="text" endIcon={<ArrowDropDownCircleIcon />} style={{ fontSize: "18px", border: "none", outline: "none", color: "black" }}>
-            <Typography variant="h5" component="h2" style={{ fontWeight: 700 }}>
-              F<span style={{ textTransform: "lowercase" }}>iltros personalizados</span>
-            </Typography>
-          </Button>
-        )}
-      </Grid>
+      <TitleClosable verify={!isFiltersClosed} title="Filtros personalizados" onClick={handleClosedFilters} />
 
       {!isFiltersClosed ? (
         <>
@@ -32,8 +20,8 @@ function RankingFiltersComponent({ sex, decade, localitiesStates, isFiltersClose
             <div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
               <div>
                 <FormControl sx={{ m: 1, minWidth: 150 }}>
-                  <InputLabel id="decade-label">Sexo</InputLabel>
-                  <Select labelId="decade-label" id="decade" value={sex} onChange={handleChangeSex} autoWidth label="decade">
+                  <InputLabel id="sex-label">Sexo</InputLabel>
+                  <Select labelId="sex-label" id="sex" value={sex} onChange={handleChangeSex} autoWidth label="Sexo" sx={{ width: "200px" }}>
                     {sexList.map((option) => (
                       <MenuItem key={option.label} value={option.value}>
                         {option.label}
@@ -43,10 +31,10 @@ function RankingFiltersComponent({ sex, decade, localitiesStates, isFiltersClose
                 </FormControl>
               </div>
 
-              <div>
+              <div style={{ marginLeft: "16px" }}>
                 <FormControl sx={{ m: 1, minWidth: 150 }}>
                   <InputLabel id="decade-label">Década</InputLabel>
-                  <Select labelId="decade-label" id="decade" value={decade} onChange={handleChangeDecade} autoWidth label="decade">
+                  <Select labelId="decade-label" id="decade" value={decade} onChange={handleChangeDecade} autoWidth label="Década" sx={{ width: "200px" }}>
                     {decadasList.map((option) => (
                       <MenuItem key={option.label} value={option.value}>
                         {option.label}
@@ -63,7 +51,7 @@ function RankingFiltersComponent({ sex, decade, localitiesStates, isFiltersClose
               <div>
                 <FormControl sx={{ m: 1, minWidth: 150 }}>
                   <InputLabel id="estate-label">Estado</InputLabel>
-                  <Select labelId="estate-label" id="estate" value={localitiesStatesSelected} onChange={handleChangeLocalitiesStatesSelected} autoWidth label="estate" disabled={isLoadingLocalitiesStates}>
+                  <Select labelId="estate-label" id="estate" value={localitiesStatesSelected} onChange={handleChangeLocalitiesStatesSelected} autoWidth label="Estado" disabled={isLoadingLocalitiesStates} sx={{ width: "200px" }}>
                     {localitiesStates.map((option) => (
                       <MenuItem key={option.nome} value={option.id}>
                         {option.nome}
@@ -73,11 +61,10 @@ function RankingFiltersComponent({ sex, decade, localitiesStates, isFiltersClose
                 </FormControl>
               </div>
 
-              {/* NOVO! */}
-              <div>
+              <div style={{ marginLeft: "16px" }}>
                 <FormControl sx={{ m: 1, minWidth: 150 }}>
                   <InputLabel id="city-label">Cidade</InputLabel>
-                  <Select labelId="city-label" id="city" value={localitiesCitiesSelected} onChange={handleChangeLocalitiesCitiesSelected} autoWidth label="city" disabled={isLoadingLocalitiesCities || !localitiesStatesSelected}>
+                  <Select labelId="city-label" id="city" value={localitiesCitiesSelected} onChange={handleChangeLocalitiesCitiesSelected} autoWidth label="Cidade" disabled={isLoadingLocalitiesCities || !localitiesStatesSelected} sx={{ width: "200px" }}>
                     {localitiesCities.map((option) => (
                       <MenuItem key={option.nome} value={option.id}>
                         {option.nome}
@@ -94,7 +81,7 @@ function RankingFiltersComponent({ sex, decade, localitiesStates, isFiltersClose
               <div>
                 <FormControl sx={{ m: 1, minWidth: 150 }}>
                   <InputLabel id="nRegister-label">Nº Registros</InputLabel>
-                  <Select labelId="nRegister-label" id="nRegister" value={nRegistersState} onChange={handleChangeNRegisters} autoWidth label="nRegister">
+                  <Select labelId="nRegister-label" id="nRegister" value={nRegistersState} onChange={handleChangeNRegisters} autoWidth label="Nº Registros" sx={{ width: "200px" }}>
                     {nRegisterList.map((option) => (
                       <MenuItem key={option.label} value={option.value}>
                         {option.label}

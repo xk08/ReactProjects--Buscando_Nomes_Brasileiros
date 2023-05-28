@@ -8,6 +8,7 @@ import EmptyComponent from "../../../../global/components/EmptyComponent";
 import RankingFiltersComponent from "../../components/RankingFiltersComponent";
 import { Grid, Button, Typography } from "@mui/material";
 import ArrowDropDownCircleIcon from "@mui/icons-material/ArrowDropDownCircle";
+import TitleClosable from "../../../../global/components/title-closable/TitleClosable";
 
 function RankingSection() {
   const [apiRankingCustomNames, setApiRankingCustomNames] = useState([]);
@@ -262,21 +263,7 @@ function RankingSection() {
         <>
           <br />
 
-          <Grid item xs={12} onClick={handleShowSectionTopCustomsNames} style={{ cursor: "pointer" }}>
-            {showCustomRankingSection ? (
-              <Button variant="text" endIcon={<ArrowDropDownCircleIcon style={{ transform: "rotate(180deg)" }} />} style={{ fontSize: "18px", border: "none", outline: "none", color: "black" }}>
-                <Typography variant="h5" component="h2">
-                  T<span style={{ textTransform: "lowercase" }}>op {nRegistersOldState} nomes filtrados</span>
-                </Typography>
-              </Button>
-            ) : (
-              <Button variant="text" endIcon={<ArrowDropDownCircleIcon />} style={{ fontSize: "18px", border: "none", outline: "none", color: "black" }}>
-                <Typography variant="h5" component="h2" style={{ fontWeight: 700 }}>
-                  T<span style={{ textTransform: "lowercase" }}>op {nRegistersOldState} nomes filtrados</span>
-                </Typography>
-              </Button>
-            )}
-          </Grid>
+          <TitleClosable verify={showCustomRankingSection} title="Top 10 nomes brasileiros" onClick={handleShowSectionTopCustomsNames} />
         </>
       ) : (
         <EmptyComponent />
