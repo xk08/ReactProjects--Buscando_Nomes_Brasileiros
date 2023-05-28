@@ -31,7 +31,7 @@ function RankingFiltersComponent({ sex, decade, localitiesStates, isFiltersClose
                 </FormControl>
               </div>
 
-              <div style={{ marginLeft: "16px" }}>
+              <div>
                 <FormControl sx={{ m: 1, minWidth: 150 }}>
                   <InputLabel id="decade-label">Década</InputLabel>
                   <Select labelId="decade-label" id="decade" value={decade} onChange={handleChangeDecade} autoWidth label="Década" sx={{ width: "200px" }}>
@@ -61,7 +61,7 @@ function RankingFiltersComponent({ sex, decade, localitiesStates, isFiltersClose
                 </FormControl>
               </div>
 
-              <div style={{ marginLeft: "16px" }}>
+              <div>
                 <FormControl sx={{ m: 1, minWidth: 150 }}>
                   <InputLabel id="city-label">Cidade</InputLabel>
                   <Select labelId="city-label" id="city" value={localitiesCitiesSelected} onChange={handleChangeLocalitiesCitiesSelected} autoWidth label="Cidade" disabled={isLoadingLocalitiesCities || !localitiesStatesSelected} sx={{ width: "200px" }}>
@@ -78,7 +78,7 @@ function RankingFiltersComponent({ sex, decade, localitiesStates, isFiltersClose
 
           <Grid item xs={12} sm={12}>
             <div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
-              <div>
+              <div style={{ marginBottom: "5px" }}>
                 <FormControl sx={{ m: 1, minWidth: 150 }}>
                   <InputLabel id="nRegister-label">Nº Registros</InputLabel>
                   <Select labelId="nRegister-label" id="nRegister" value={nRegistersState} onChange={handleChangeNRegisters} autoWidth label="Nº Registros" sx={{ width: "200px" }}>
@@ -94,7 +94,7 @@ function RankingFiltersComponent({ sex, decade, localitiesStates, isFiltersClose
           </Grid>
 
           <Grid item xs={12}>
-            <div style={{ display: "flex", justifyContent: "center", marginTop: "16px" }}>
+            <div style={{ display: "flex", justifyContent: "center", marginTop: "0px" }}>
               <SimpleButtonComponent key="ranking_filter_button" label="Filtrar busca" fn={fnOnClick} disabled={disabled} />
 
               <Box ml={2}>
