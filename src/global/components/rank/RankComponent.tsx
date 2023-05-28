@@ -4,7 +4,7 @@ import { Card, CardContent, Grid, Typography, Divider } from "@mui/material";
 function RankComponent({ ranking, nome, frequencia }) {
   return (
     <Grid item xs={12} sm={6} md={4}>
-      <Card sx={{ borderRadius: 5, boxShadow: 3 }}>
+      <Card sx={{ borderRadius: 3, boxShadow: 3 }}>
         <CardContent>
           <Typography variant="body1" component="p" align="center" color="textSecondary">
             Ranking: {ranking}

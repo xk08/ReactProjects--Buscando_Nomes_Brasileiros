@@ -7,15 +7,14 @@ import formatNumberWithDots from "../../../../global/format_number_with_dots";
 import textLengthValidation from "../../../../global/validators/text_length_validator";
 
 import ErrorTextComponent from "../../../../global/components/ErrorTextComponent";
-import SimpleInputComponent from "../../../../global/components/inputs/SimpleInputComponent";
+import TitleClosable from "../../../../global/components/title-closable/TitleClosable";
 import EmptyComponent from "../../../../global/components/EmptyComponent";
 
 import LoadingSkeletonComponent from "../../../../global/components/animations/SkeletonLoader/LoadingSkeletonComponent";
 
-import SimpleButtonStyledComponent from "../../../../global/components/buttons/SimpleButtonStyledComponent";
-
 import styles from "./NameSection.module.css";
-import { Grid, Table, TableHead, TableRow, TableCell, TableBody, Card, Typography } from "@mui/material";
+import { Grid, Table, TableHead, TableRow, TableCell, TableBody, Card, Typography, Button, TextField } from "@mui/material";
+import ArrowDropDownCircleIcon from "@mui/icons-material/ArrowDropDownCircle";
 
 function NameSection() {
   /* Estados */
@@ -28,6 +27,7 @@ function NameSection() {
   const [textLengthIsNotValid, setTextLengthIsNotValid] = useState(true);
   const [textLengthValidationSmall, setTextLengthValidationSmall] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isNameClosed, setIsNameClosed] = useState(false);
 
   /* Funções Handle */
   const handleNameChange = (event) => {
@@ -66,71 +66,80 @@ function NameSection() {
     }
   };
 
+  function handleCloseName() {
+    setIsNameClosed(!isNameClosed);
+  }
+
   /* Renderização da tela */
   return (
     <Grid container spacing={2} justifyContent="center">
-      <Grid item xs={12}>
-        <Typography variant="h5" component="h2">
-          Busca por nome
-        </Typography>
-      </Grid>
+      <TitleClosable verify={!isNameClosed} title="Busca por nome" onClick={handleCloseName} />
 
-      <Grid item xs={12} sm={6} container alignItems="center" justifyContent="center">
-        <SimpleInputComponent type="text" value={name} fnOnChange={handleNameChange} fnOnKeyUp={(event) => textLengthValidator(event, 3)} smallDescription={textLengthValidationSmall} style={{ width: "100%" }} />
-        <SimpleButtonStyledComponent label="Buscar nome" fn={handleButtonClicked} disabled={textLengthIsNotValid} />
-      </Grid>
+      {!isNameClosed ? (
+        <>
+          <Grid item xs={12} sm={6} container alignItems="center" justifyContent="center">
+            <TextField type="text" value={name} onChange={handleNameChange} onKeyUp={(event) => textLengthValidator(event, 3)} label="Nome" variant="outlined" fullWidth margin="normal" />
 
-      <Grid item xs={12}>
-        <Card sx={{ borderRadius: 5, boxShadow: 3 }}>
-          <div className={styles.div}>
-            {requestValid != null ? <h3>Informações sobre o nome: {lastNameSearched}</h3> : <EmptyComponent />}
+            <Button variant="contained" color="primary" onClick={handleButtonClicked} disabled={textLengthIsNotValid} fullWidth>
+              Buscar nome
+            </Button>
+          </Grid>
 
-            {isLoading ? (
-              <LoadingSkeletonComponent exibeThreeNamesCardSkeleton={false} exibeNameDataCardSkeleton={true} />
-            ) : requestValid ? (
-              <Table>
-                <TableHead>
-                  <TableRow>
-                    <TableCell style={{ fontWeight: "bold" }}>
-                      <Typography variant="body1" component="p" align="center" color="primary">
-                        Período
-                      </Typography>
-                    </TableCell>
+          <Grid item xs={12}>
+            <Card sx={{ borderRadius: 5, boxShadow: 3 }}>
+              <div className={styles.div}>
+                {requestValid != null ? <h3>Nome: {lastNameSearched.toUpperCase()}</h3> : <EmptyComponent />}
 
-                    <TableCell style={{ fontWeight: "bold" }}>
-                      <Typography variant="body1" component="p" align="center" color="primary">
-                        Quantidade
-                      </Typography>
-                    </TableCell>
-                  </TableRow>
-                </TableHead>
+                {isLoading ? (
+                  <LoadingSkeletonComponent exibeThreeNamesCardSkeleton={false} exibeNameDataCardSkeleton={true} />
+                ) : requestValid ? (
+                  <Table>
+                    <TableHead>
+                      <TableRow>
+                        <TableCell style={{ fontWeight: "bold" }}>
+                          <Typography variant="body1" component="p" align="center" color="primary">
+                            Período
+                          </Typography>
+                        </TableCell>
 
-                <TableBody>
-                  {apiData.map((data, index) => (
-                    <TableRow key={data.periodo} sx={{ backgroundColor: index % 2 === 0 ? "#f5f5f5" : "#ffffff" }}>
-                      <TableCell color="primary">
-                        <Typography variant="body1" component="p" align="center" color="textSecondary">
-                          {data.periodo.replace(/[\[\],]/g, (match) => (match === "," ? ", " : ""))}
-                        </Typography>
-                      </TableCell>
+                        <TableCell style={{ fontWeight: "bold" }}>
+                          <Typography variant="body1" component="p" align="center" color="primary">
+                            Quantidade
+                          </Typography>
+                        </TableCell>
+                      </TableRow>
+                    </TableHead>
 
-                      <TableCell>
-                        <Typography variant="body1" component="p" align="center" color="textSecondary">
-                          {formatNumberWithDots(data.frequencia)}
-                        </Typography>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            ) : requestValid == null ? (
-              <EmptyComponent />
-            ) : (
-              <ErrorTextComponent title={`O nome ${lastNameSearched} não foi encontrado`} description="Escolha outro nome e tente novamente." />
-            )}
-          </div>
-        </Card>
-      </Grid>
+                    <TableBody>
+                      {apiData.map((data, index) => (
+                        <TableRow key={data.periodo} sx={{ backgroundColor: index % 2 === 0 ? "#f5f5f5" : "#ffffff" }}>
+                          <TableCell color="primary">
+                            <Typography variant="body1" component="p" align="center" color="textSecondary">
+                              {data.periodo.replace(/[\[\],]/g, (match) => (match === "," ? ", " : ""))}
+                            </Typography>
+                          </TableCell>
+
+                          <TableCell>
+                            <Typography variant="body1" component="p" align="center" color="textSecondary">
+                              {formatNumberWithDots(data.frequencia)}
+                            </Typography>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                ) : requestValid == null ? (
+                  <EmptyComponent />
+                ) : (
+                  <ErrorTextComponent title={`O nome ${lastNameSearched} não foi encontrado`} description="Escolha outro nome e tente novamente." />
+                )}
+              </div>
+            </Card>
+          </Grid>
+        </>
+      ) : (
+        <EmptyComponent />
+      )}
     </Grid>
   );
 }

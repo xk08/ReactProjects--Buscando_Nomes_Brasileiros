@@ -5,33 +5,20 @@ import { Grid, Typography, Button } from "@mui/material";
 import RankComponent from "../../../global/components/rank/RankComponent";
 import ArrowDropDownCircleIcon from "@mui/icons-material/ArrowDropDownCircle";
 import EmptyComponent from "../../../global/components/EmptyComponent";
+import TitleClosable from "../../../global/components/title-closable/TitleClosable";
 
 const rankingNumber = [1, 2, 3];
 
 function TableThreeNamesComponent(props) {
   return (
     <Grid container spacing={2}>
-      <Grid item xs={12} onClick={props.handleClosedTableThree}>
-        {!props.isTableThreeClosed ? (
-          <Button variant="text" endIcon={<ArrowDropDownCircleIcon style={{ transform: "rotate(180deg)" }} />} style={{ fontSize: "18px", border: "none", outline: "none", color: "black" }}>
-            <Typography variant="h5" component="h2">
-              T<span style={{ textTransform: "lowercase" }}>op 3 nomes</span>
-            </Typography>
-          </Button>
-        ) : (
-          <Button variant="text" endIcon={<ArrowDropDownCircleIcon />} style={{ fontSize: "18px", border: "none", outline: "none", color: "black" }}>
-            <Typography variant="h5" component="h2" style={{ fontWeight: 700 }}>
-              T<span style={{ textTransform: "lowercase" }}>op 3 nomes</span>
-            </Typography>
-          </Button>
-        )}
-      </Grid>
+      <TitleClosable verify={!props.isTableThreeClosed} title="Top 3 nomes" onClick={props.handleClosedTableThree} />
 
       {!props.isTableThreeClosed ? (
         props.isLoading ? (
           <>
             {rankingNumber.map((ranking) => (
-              <Grid key={ranking} item xs={12} sm={6} md={4}>
+              <Grid item xs={12} sm={6} md={4} key={ranking}>
                 <LoadingSkeletonComponent exibeThreeNamesCardSkeleton={true} exibeNameDataCardSkeleton={false} />
               </Grid>
             ))}
