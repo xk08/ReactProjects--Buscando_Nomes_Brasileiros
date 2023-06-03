@@ -6,8 +6,6 @@ import TableThreeNamesComponent from "../../components/TableThreeNameComponent";
 import TableCustomNamesComponent from "../../components/TableCustomNameComponent";
 import EmptyComponent from "../../../../global/components/EmptyComponent";
 import RankingFiltersComponent from "../../components/RankingFiltersComponent";
-import { Grid, Button, Typography } from "@mui/material";
-import ArrowDropDownCircleIcon from "@mui/icons-material/ArrowDropDownCircle";
 import TitleClosable from "../../../../global/components/title-closable/TitleClosable";
 
 function RankingSection() {
@@ -32,9 +30,6 @@ function RankingSection() {
 
   const [nRegistersState, setNRegistersState] = useState(9);
   const [nRegistersOldState, setNRegistersOldState] = useState(9);
-
-  const [isFiltersClosed, setIsFiltersClosed] = useState(false);
-  const [isTableThreeClosed, setIsTableThreeClosed] = useState(false);
 
   useEffect(() => {
     findRankingNamesInApi();
@@ -212,19 +207,11 @@ function RankingSection() {
     }
   };
 
-  function handleClosedFilters() {
-    setIsFiltersClosed(!isFiltersClosed);
-  }
-
-  function handleClosedTableThree() {
-    setIsTableThreeClosed(!isTableThreeClosed);
-  }
-
   return (
     <>
       <br />
       {/* TOP 3 NOMES BRASILEIROS*/}
-      <TableThreeNamesComponent apiRankingThreeNames={apiRankingThreeNames} apiDataOk={apiDataOk} isLoading={isLoadingRankingNames} isTableThreeClosed={isTableThreeClosed} handleClosedTableThree={handleClosedTableThree} />
+      <TableThreeNamesComponent apiRankingThreeNames={apiRankingThreeNames} apiDataOk={apiDataOk} isLoading={isLoadingRankingNames} />
 
       <br />
       <br />
@@ -238,13 +225,11 @@ function RankingSection() {
           localitiesCities={localitiesCitiesChild}
           localitiesStatesSelected={localitiesStatesSelectedChild}
           localitiesCitiesSelected={localitiesCitiesSelectedChild}
-          isFiltersClosed={isFiltersClosed}
           nRegistersState={nRegistersState}
           handleChangeSex={handleChangeSexChild}
           handleChangeDecade={handleChangeDecadeChild}
           handleChangeNRegisters={handleChangeNRegistersChild}
           handleChangeLocality={handleChangeLocalityChild}
-          handleClosedFilters={handleClosedFilters}
           handleChangeLocalitiesStatesSelected={handleChangeLocalitiesStatesSelectedChild}
           handleChangeLocalitiesCitiesSelected={handleChangeLocalitiesCitiesSelectedChild}
           handleClearRankingChildrenFilters={handleClearRankingChildrenFilters}

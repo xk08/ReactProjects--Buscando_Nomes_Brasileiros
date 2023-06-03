@@ -1,14 +1,20 @@
+import { useState } from "react";
 import EmptyComponent from "../../../global/components/EmptyComponent";
 import SimpleButtonComponent from "../../../global/components/buttons/SimpleButtonComponent";
 import TitleClosable from "../../../global/components/title-closable/TitleClosable";
 import decadasList from "../data/decadas_list";
 import nRegisterList from "../data/n_registers_list";
 import sexList from "../data/sex_list";
-import ArrowDropDownCircleIcon from "@mui/icons-material/ArrowDropDownCircle";
-import { Grid, Select, MenuItem, FormControl, InputLabel, Box, Typography, Button } from "@mui/material";
+import { Grid, Select, MenuItem, FormControl, InputLabel, Box } from "@mui/material";
 
 // TODO: os states de abrir e fechar os títulos e de esconder os componentes foram passador por props, rever se nao seria melhor criar aqui mesmo
-function RankingFiltersComponent({ sex, decade, localitiesStates, isFiltersClosed, localitiesCities, localitiesStatesSelected, localitiesCitiesSelected, nRegistersState, handleChangeDecade, handleChangeNRegisters, handleChangeSex, handleChangeLocalitiesStatesSelected, handleChangeLocalitiesCitiesSelected, isLoadingLocalitiesStates, isLoadingLocalitiesCities, fnOnClick, disabled, handleClearRankingChildrenFilters, handleClosedFilters }) {
+function RankingFiltersComponent({ sex, decade, localitiesStates, localitiesCities, localitiesStatesSelected, localitiesCitiesSelected, nRegistersState, handleChangeDecade, handleChangeNRegisters, handleChangeSex, handleChangeLocalitiesStatesSelected, handleChangeLocalitiesCitiesSelected, isLoadingLocalitiesStates, isLoadingLocalitiesCities, fnOnClick, disabled, handleClearRankingChildrenFilters }) {
+  const [isFiltersClosed, setIsFiltersClosed] = useState(false);
+
+  const handleClosedFilters = () => {
+    setIsFiltersClosed(!isFiltersClosed);
+  };
+
   return (
     /* TODO: Trocar o Select pelo AutoComplete -> https://mui.com/material-ui/react-autocomplete/#combo-box */
     <Grid container wrap="wrap">

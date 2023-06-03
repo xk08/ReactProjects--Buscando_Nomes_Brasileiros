@@ -1,20 +1,26 @@
+import { useState } from "react";
 import formatNumberWithDots from "../../../global/format_number_with_dots";
 import ErrorTextComponent from "../../../global/components/ErrorTextComponent";
 import LoadingSkeletonComponent from "../../../global/components/animations/SkeletonLoader/LoadingSkeletonComponent";
-import { Grid, Typography, Button } from "@mui/material";
+import { Grid } from "@mui/material";
 import RankComponent from "../../../global/components/rank/RankComponent";
-import ArrowDropDownCircleIcon from "@mui/icons-material/ArrowDropDownCircle";
 import EmptyComponent from "../../../global/components/EmptyComponent";
 import TitleClosable from "../../../global/components/title-closable/TitleClosable";
 
 const rankingNumber = [1, 2, 3];
 
 function TableThreeNamesComponent(props) {
+  const [isTableThreeClosed, setIsTableThreeClosed] = useState(false);
+
+  const handleClosedTableThree = () => {
+    setIsTableThreeClosed(!isTableThreeClosed);
+  };
+
   return (
     <Grid container spacing={2}>
-      <TitleClosable verify={!props.isTableThreeClosed} title="Top 3 nomes" onClick={props.handleClosedTableThree} />
+      <TitleClosable verify={!isTableThreeClosed} title="Top 3 nomes" onClick={handleClosedTableThree} />
 
-      {!props.isTableThreeClosed ? (
+      {!isTableThreeClosed ? (
         props.isLoading ? (
           <>
             {rankingNumber.map((ranking) => (
