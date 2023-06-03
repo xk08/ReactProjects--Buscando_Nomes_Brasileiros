@@ -5,7 +5,10 @@ import TitleClosable from "../../../global/components/title-closable/TitleClosab
 import decadasList from "../data/decadas_list";
 import nRegisterList from "../data/n_registers_list";
 import sexList from "../data/sex_list";
-import { Grid, Select, MenuItem, FormControl, InputLabel, Box } from "@mui/material";
+import { Grid, Select, MenuItem, FormControl, InputLabel, Box, Autocomplete, TextField } from "@mui/material";
+import FilterAltIcon from '@mui/icons-material/FilterAlt';
+import ClearIcon from '@mui/icons-material/Clear';
+
 
 // TODO: os states de abrir e fechar os títulos e de esconder os componentes foram passador por props, rever se nao seria melhor criar aqui mesmo
 function RankingFiltersComponent({ sex, decade, localitiesStates, localitiesCities, localitiesStatesSelected, localitiesCitiesSelected, nRegistersState, handleChangeDecade, handleChangeNRegisters, handleChangeSex, handleChangeLocalitiesStatesSelected, handleChangeLocalitiesCitiesSelected, isLoadingLocalitiesStates, isLoadingLocalitiesCities, fnOnClick, disabled, handleClearRankingChildrenFilters }) {
@@ -86,6 +89,7 @@ function RankingFiltersComponent({ sex, decade, localitiesStates, localitiesCiti
             <div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
               <div style={{ marginBottom: "5px" }}>
                 <FormControl sx={{ m: 1, minWidth: 150 }}>
+
                   <InputLabel id="nRegister-label">Nº Registros</InputLabel>
                   <Select labelId="nRegister-label" id="nRegister" value={nRegistersState} onChange={handleChangeNRegisters} autoWidth label="Nº Registros" sx={{ width: "200px" }}>
                     {nRegisterList.map((option) => (
@@ -101,10 +105,10 @@ function RankingFiltersComponent({ sex, decade, localitiesStates, localitiesCiti
 
           <Grid item xs={12}>
             <div style={{ display: "flex", justifyContent: "center", marginTop: "0px" }}>
-              <SimpleButtonComponent key="ranking_filter_button" label="Filtrar busca" fn={fnOnClick} disabled={disabled} />
+              <SimpleButtonComponent key="ranking_filter_button" label="Filtrar busca" fn={fnOnClick} disabled={disabled} endIcon={<FilterAltIcon />} />
 
               <Box ml={2}>
-                <SimpleButtonComponent label="Limpar filtros" fn={handleClearRankingChildrenFilters} disabled={disabled} />
+                <SimpleButtonComponent label="Limpar filtros" fn={handleClearRankingChildrenFilters} disabled={disabled} endIcon={<ClearIcon />} />
               </Box>
             </div>
           </Grid>
