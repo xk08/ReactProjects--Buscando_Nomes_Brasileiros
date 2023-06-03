@@ -17,9 +17,9 @@ export default async function customFetch(baseUrl, requestInit, actionDescriptio
             }
 
             if (executeOnDebugMode) {
-                console.log(`##################\nAPI-FETCH-LOG ###\n->Action-Description: ${actionDescription}\n->Status: ${resposta.status}\n->JSON: ${JSON.stringify(data)}\n##################\n`);
+                console.log(`###############\nAPI-FETCH-LOG ###\n->Action-Description: ${actionDescription}\n->Status: ${resposta.status}\n->Endpoint: ${baseUrl}\n->JSON: ${JSON.stringify(data)}\n###############\n`);
             } else {
-                console.log(`##################\nAPI-FETCH-LOG ###\n->Action-Description: ${actionDescription}\n->Status: ${resposta.status}\n##################\n`);
+                console.log(`###############\nAPI-FETCH-LOG ###\n->Action-Description: ${actionDescription}\n->Status: ${resposta.status}\n->Endpoint: ${baseUrl}\n###############\n`);
             }
 
         } else {

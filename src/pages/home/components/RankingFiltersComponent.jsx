@@ -9,8 +9,6 @@ import { Grid, Select, MenuItem, FormControl, InputLabel, Box, Autocomplete, Tex
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import ClearIcon from '@mui/icons-material/Clear';
 
-
-// TODO: os states de abrir e fechar os títulos e de esconder os componentes foram passador por props, rever se nao seria melhor criar aqui mesmo
 function RankingFiltersComponent({ sex, decade, localitiesStates, localitiesCities, localitiesStatesSelected, localitiesCitiesSelected, nRegistersState, handleChangeDecade, handleChangeNRegisters, handleChangeSex, handleChangeLocalitiesStatesSelected, handleChangeLocalitiesCitiesSelected, isLoadingLocalitiesStates, isLoadingLocalitiesCities, fnOnClick, disabled, handleClearRankingChildrenFilters }) {
   const [isFiltersClosed, setIsFiltersClosed] = useState(false);
 

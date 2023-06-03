@@ -13,53 +13,107 @@ import EmptyComponent from "../../../../global/components/EmptyComponent";
 import LoadingSkeletonComponent from "../../../../global/components/animations/SkeletonLoader/LoadingSkeletonComponent";
 
 import styles from "./NameSection.module.css";
-import { Box, FormControl, InputLabel, MenuItem, Select, Grid, Table, TableHead, TableRow, TableCell, TableBody, Card, Typography, Button, TextField } from "@mui/material";
+import { Box, FormControl, InputLabel, MenuItem, Select, Grid, Table, TableHead, TableRow, TableCell, TableBody, Card, Typography, TextField } from "@mui/material";
 
 import sexList from "../../data/sex_list";
 import SimpleButtonComponent from "../../../../global/components/buttons/SimpleButtonComponent";
 
-import ColorsUtils from '../../../../global/Utils/colors';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import BackspaceIcon from '@mui/icons-material/Backspace';
-
-
+// import ColorsUtils from '../../../../global/Utils/colors';
 
 
 function NameSection() {
-  /* Estados */
+
   const [name, setName] = useState("");
-  const [lastNameSearched, setLastNameSearched] = useState("");
+  const [sex, setSex] = useState("");
+  const [locality, setLocality] = useState("");
   const [apiData, setApiData] = useState([]);
 
-  /* Estados - Validações */
+  const [localitiesStatesSelected, setLocalitiesStatesSelected] = useState("");
+  const [localitiesCitiesSelected, setLocalitiesCitiesSelected] = useState("");
+  const [localitiesStates, setLocalitiesStates] = useState([]);
+  const [localitiesCities, setLocalitiesCities] = useState([]);
+
+  const [lastNameSearched, setLastNameSearched] = useState("");
   const [requestValid, setRequestValid] = useState();
   const [textLengthIsNotValid, setTextLengthIsNotValid] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [isNameClosed, setIsNameClosed] = useState(false);
-
-
   const [isFiltersClosed, setIsFiltersClosed] = useState(false);
   const [isFiltersValid, seIsFiltersValid] = useState(false);
+  const [isLoadingLocalitiesStates, setIsLoadingLocalitiesStates] = useState(false);
+  const [isLoadingLocalitiesCities, setIsLoadingLocalitiesCities] = useState(false);
 
 
-  const [sex, setSex] = useState("");
-  const [locality, setLocality] = useState("");
-
-
+  /* Busca automáticamente a lista de estados(UFs) */
   useEffect(() => {
-    if (sex && name.length >= 3) {
+
+    const findLocalitiesStatesInApi = async () => {
+
+      setIsLoadingLocalitiesStates(true);
+
+      const baseUrl = `${apiBaseUrlIbge}/v1/localidades/estados`;
+      let response = await customFetch(baseUrl, null, "Buscando estados brasileiros [UFs]");
+
+      if (response.status == 200) {
+        if (response.data.length > 0) {
+          setLocalitiesStates(response.data);
+        } else {
+          setLocalitiesStates([]);
+        }
+      } else {
+        setLocalitiesStates([]);
+      }
+      setIsLoadingLocalitiesStates(false);
+
+    };
+
+    findLocalitiesStatesInApi();
+  }, []);
+
+  /* Busca a lista de municipios, sempre que "localitiesStatesSelected" sofrer alteração em seu estado */
+  useEffect(() => {
+
+    const findLocalitiesCitiesInApi = async () => {
+
+      if (localitiesStatesSelected) {
+
+        setIsLoadingLocalitiesCities(true);
+
+        const baseUrl = `${apiBaseUrlIbge}/v1/localidades/estados/${localitiesStatesSelected}/municipios`;
+        let response = await customFetch(baseUrl, null, "Buscando municipios brasileiros com base na UF");
+
+        if (response.status == 200) {
+          if (response.data.length > 0) {
+            setLocalitiesCities(response.data);
+          } else {
+            setLocalitiesCities([]);
+          }
+        } else {
+          setLocalitiesCities([]);
+        }
+        setIsLoadingLocalitiesCities(false);
+      }
+
+    };
+    findLocalitiesCitiesInApi();
+  }, [localitiesStatesSelected]);
+
+  /* Valida o estado dos filtros, sempre que nome, sexo ou localidade sofrer alteração de estado */
+  useEffect(() => {
+    if ((sex || locality) && name.length >= 3) {
       seIsFiltersValid(true);
     } else {
       seIsFiltersValid(false);
     }
-  }, [sex, name]);
+  }, [sex, name, locality]);
 
 
   const handleClosedFilters = () => {
     setIsFiltersClosed(!isFiltersClosed);
   };
 
-  /* Funções Handle */
   const handleNameChange = (event) => {
     setName(event.target.value.trim());
   };
@@ -72,8 +126,18 @@ function NameSection() {
     setLocality(e.target.value);
   };
 
+  const handleChangeLocalitiesStatesSelected = (e) => {
+    setLocalitiesStatesSelected(e.target.value);
+    handleChangeLocality(e);
+  };
+
+  const handleChangeLocalitiesCitiesSelected = (e) => {
+    setLocalitiesCitiesSelected(e.target.value);
+    handleChangeLocality(e);
+  };
+
   const handleButtonClicked = () => {
-    handleExecuteFilters(sex, locality); /// TODO: @@@ Falta a quantidade ??
+    handleExecuteFilters(sex, locality);
   };
 
   const findNameInApi = async (filter) => {
@@ -81,7 +145,7 @@ function NameSection() {
 
     const baseUrl = defineBaseUrlBasedOnFilters(filter);
 
-    let response = await customFetch(baseUrl, null, "Buscando primeiro nome");
+    let response = await customFetch(baseUrl, null, `Buscando o nome ${name} na API`);
 
     setTimeout(() => {
       let dados = response.data;
@@ -100,9 +164,7 @@ function NameSection() {
 
   };
 
-  const handleExecuteFilters = async (sex, locality, registersQtd) => {
-
-    //setNRegistersOldState(registersQtd); /// TODO: Verificar se teremos algo do tipo
+  const handleExecuteFilters = async (sex, locality) => {
 
     if (sex && locality) {
       await findNameInApi("sex&locality");
@@ -148,6 +210,8 @@ function NameSection() {
     setApiData([]);
     setRequestValid(undefined);
     seIsFiltersValid(false);
+    setLocalitiesStatesSelected("");
+    setLocalitiesCitiesSelected("");
   }
 
   const textLengthValidator = (event, minLength) => {
@@ -163,7 +227,6 @@ function NameSection() {
     setIsNameClosed(!isNameClosed);
   }
 
-  /* Renderização da tela */
   return (
     <Grid container spacing={2} justifyContent="center">
       <TitleClosable
@@ -253,8 +316,6 @@ function NameSection() {
             </Card>
           </Grid>
 
-
-          {/* @@@@ AQUIIIIIIIIII */}
           <Grid container wrap="wrap">
             <TitleClosable
               verify={!isFiltersClosed}
@@ -265,12 +326,23 @@ function NameSection() {
             {!isFiltersClosed ? (
               <>
 
+                <Grid item xs={12} sm={12}>
+                  <div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+                    <div>
+                      <FormControl sx={{ m: 1, minWidth: 150 }}>
+                        <InputLabel id="sex-label">Sexo</InputLabel>
+                        <Select labelId="sex-label" id="sex" value={sex} onChange={handleChangeSex} autoWidth label="Sexo" sx={{ width: "200px" }}>
+                          {sexList.map((option) => (
+                            <MenuItem key={option.label} value={option.value}>
+                              {option.label}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
+                    </div>
 
+                  </div>
 
-
-
-
-                {/*  <Grid item xs={12} sm={12}>
                   <div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
                     <div>
                       <FormControl sx={{ m: 1, minWidth: 150 }}>
@@ -298,79 +370,37 @@ function NameSection() {
                       </FormControl>
                     </div>
                   </div>
-                </Grid> */}
 
-                {/*  <Grid item xs={12} sm={12}>
+                </Grid>
+
+                <Grid item xs={12}>
                   <div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
-                    <div style={{ marginBottom: "5px" }}>
-                      <FormControl sx={{ m: 1, minWidth: 150 }}>
-                        <InputLabel id="nRegister-label">Nº Registros</InputLabel>
-                        <Select labelId="nRegister-label" id="nRegister" value={nRegistersState} onChange={handleChangeNRegisters} autoWidth label="Nº Registros" sx={{ width: "200px" }}>
-                          {nRegisterList.map((option) => (
-                            <MenuItem key={option.label} value={option.value}>
-                              {option.label}
-                            </MenuItem>
-                          ))}
-                        </Select>
-                      </FormControl>
-                    </div>
-                  </div>
-                </Grid> */}
 
-                {/* <Grid item xs={12}>
-                  <div style={{ display: "flex", justifyContent: "center", marginTop: "0px" }}>
-                    <SimpleButtonComponent key="ranking_filter_button" label="Filtrar busca" fn={fnOnClick} disabled={disabled} endIcon={<FilterAltIcon />} />
+                    <SimpleButtonComponent
+                      key="ranking_filter_button"
+                      label={isFiltersValid ? "Buscar com filtros" : "Buscar"}
+                      fn={handleButtonClicked}
+                      endIcon={<FilterAltIcon />}
+                      disabled={textLengthIsNotValid}
+                    />
 
                     <Box ml={2}>
-                      <SimpleButtonComponent label="Limpar filtros" fn={handleClearRankingChildrenFilters} disabled={disabled} endIcon={<BackspaceIcon />} />
+                      <SimpleButtonComponent
+                        label="Limpar"
+                        fn={clearNameFilters}
+                        disabled={!isFiltersValid}
+                        endIcon={<BackspaceIcon />}
+                      />
                     </Box>
                   </div>
-                </Grid> */}
+                </Grid>
+
               </>
             ) : (
               <EmptyComponent />
             )}
 
-            <Grid item xs={12} sm={12}>
-              <div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
-                <div>
-                  <FormControl sx={{ m: 1, minWidth: 150 }}>
-                    <InputLabel id="sex-label">Sexo</InputLabel>
-                    <Select labelId="sex-label" id="sex" value={sex} onChange={handleChangeSex} autoWidth label="Sexo" sx={{ width: "200px" }}>
-                      {sexList.map((option) => (
-                        <MenuItem key={option.label} value={option.value}>
-                          {option.label}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
-                </div>
 
-              </div>
-            </Grid>
-
-            <Grid item xs={12}>
-              <div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
-
-                <SimpleButtonComponent
-                  key="ranking_filter_button"
-                  label={isFiltersValid ? "Buscar com filtros" : "Buscar"}
-                  fn={handleButtonClicked}
-                  endIcon={<FilterAltIcon />}
-                  disabled={textLengthIsNotValid}
-                />
-
-
-                <Box ml={2}>
-                  <SimpleButtonComponent
-                    label="Limpar"
-                    fn={clearNameFilters}
-                    disabled={!isFiltersValid}
-                    endIcon={<BackspaceIcon />}
-                  />
-                </Box>
-              </div>
-            </Grid>
           </Grid>
         </>
       ) : (
