@@ -7,6 +7,7 @@ import RankComponent from "../../../global/components/rank/RankComponent";
 import EmptyComponent from "../../../global/components/EmptyComponent";
 import TitleClosable from "../../../global/components/title-closable/TitleClosable";
 
+
 const rankingNumber = [1, 2, 3];
 
 function TableThreeNamesComponent(props) {
@@ -37,6 +38,8 @@ function TableThreeNamesComponent(props) {
       ) : (
         <EmptyComponent />
       )}
+
+
     </Grid>
   );
 }

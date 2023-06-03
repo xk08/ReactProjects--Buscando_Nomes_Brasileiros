@@ -30,11 +30,38 @@ function RankingSection() {
 
   const [nRegistersState, setNRegistersState] = useState(9);
   const [nRegistersOldState, setNRegistersOldState] = useState(9);
+  const [refreshPageWhenClearFilters, setRefreshPageWhenClearFilters] = useState(false);
 
   useEffect(() => {
     findRankingNamesInApi();
     findLocalitiesStatesInApi();
-  }, []);
+  }, [refreshPageWhenClearFilters]);
+
+  useEffect(() => {
+
+    const findLocalitiesCitiesInApi = async () => {
+
+      if (localitiesStatesSelectedChild) {
+
+        setIsLoadingLocalitiesCities(true);
+        const baseUrl = `${apiBaseUrlIbge}/v1/localidades/estados/${localitiesStatesSelectedChild}/municipios`;
+        let response = await customFetch(baseUrl, null, "Buscando municipios brasileiros com base na UF");
+
+        if (response.status == 200) {
+          if (response.data.length > 0) {
+            setLocalitiesCitiesChild(response.data);
+          } else {
+            setLocalitiesCitiesChild([]);
+          }
+        } else {
+          setLocalitiesCitiesChild([]);
+        }
+        setIsLoadingLocalitiesCities(false);
+      }
+
+    };
+    findLocalitiesCitiesInApi();
+  }, [localitiesStatesSelectedChild]);
 
   const handleShowSectionTopCustomsNames = () => {
     setShowCustomRankingSection(!showCustomRankingSection);
@@ -59,7 +86,6 @@ function RankingSection() {
   const handleChangeLocalitiesStatesSelectedChild = (e) => {
     setLocalitiesStatesSelectedChild(e.target.value);
     handleChangeLocalityChild(e);
-    findLocalitiesCitiesInApi(e.target.value); /// TODO: Aprender a pegar o estado atualizado, para não ter que passar por parametro
   };
 
   const handleChangeLocalitiesCitiesSelectedChild = (e) => {
@@ -75,6 +101,7 @@ function RankingSection() {
     setLocalitiesCitiesSelectedChild("");
     setNRegistersState(9);
     handleExecuteFilterInsideComponent("", "", "", 9);
+    setRefreshPageWhenClearFilters(!refreshPageWhenClearFilters);
   };
 
   const verifyStatesAndDisableButton = () => {
@@ -96,24 +123,6 @@ function RankingSection() {
       setLocalitiesStatesChild([]);
     }
     setIsLoadingLocalitiesStates(false);
-  };
-
-  const findLocalitiesCitiesInApi = async (uf) => {
-    setIsLoadingLocalitiesCities(true);
-    const baseUrl = `${apiBaseUrlIbge}/v1/localidades/estados/${uf}/municipios`;
-    let response = await customFetch(baseUrl, null, "Buscando municipios brasileiros com base na UF");
-
-    if (response.status == 200) {
-      if (response.data.length > 0) {
-        setLocalitiesCitiesChild(response.data);
-      } else {
-        setLocalitiesCitiesChild([]);
-      }
-    } else {
-      setLocalitiesCitiesChild([]);
-    }
-
-    setIsLoadingLocalitiesCities(false);
   };
 
   const handleExecuteFilterInsideComponent = async (sex, decade, locality, registersQtd) => {
@@ -198,7 +207,6 @@ function RankingSection() {
 
   const defineFilters = (responseDataApi) => {
     try {
-      // TODO: Ajustar o estado quando o usuario limpa o filtro, está pegando o estado anterior
       setApiRankingCustomNames(responseDataApi.filter((data) => data.ranking >= 1 && data.ranking <= nRegistersState));
       setApiRankingThreeNames(responseDataApi.filter((data) => data.ranking >= 1 && data.ranking <= 3));
       setApiDataOk(true);
@@ -211,7 +219,10 @@ function RankingSection() {
     <>
       <br />
       {/* TOP 3 NOMES BRASILEIROS*/}
-      <TableThreeNamesComponent apiRankingThreeNames={apiRankingThreeNames} apiDataOk={apiDataOk} isLoading={isLoadingRankingNames} />
+      <TableThreeNamesComponent
+        apiRankingThreeNames={apiRankingThreeNames}
+        apiDataOk={apiDataOk}
+        isLoading={isLoadingRankingNames} />
 
       <br />
       <br />
@@ -248,7 +259,11 @@ function RankingSection() {
         <>
           <br />
 
-          <TitleClosable verify={showCustomRankingSection} title="Top 10 nomes brasileiros" onClick={handleShowSectionTopCustomsNames} />
+          <TitleClosable
+            verify={showCustomRankingSection}
+            title="Top 10 nomes brasileiros"
+            onClick={handleShowSectionTopCustomsNames}
+          />
         </>
       ) : (
         <EmptyComponent />
@@ -259,7 +274,13 @@ function RankingSection() {
         <>
           <br />
 
-          <TableCustomNamesComponent apiRankingCustomNames={apiRankingCustomNames} apiDataOk={apiDataOk} isLoading={isLoadingRankingNames} nRegisters={nRegistersOldState} handleShowSectionTopCustomsNames={handleShowSectionTopCustomsNames} />
+          <TableCustomNamesComponent
+            apiRankingCustomNames={apiRankingCustomNames}
+            apiDataOk={apiDataOk}
+            isLoading={isLoadingRankingNames}
+            nRegisters={nRegistersOldState}
+            handleShowSectionTopCustomsNames={handleShowSectionTopCustomsNames}
+          />
         </>
       ) : (
         <EmptyComponent />
