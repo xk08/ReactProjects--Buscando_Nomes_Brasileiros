@@ -9,12 +9,11 @@ import textLengthValidation from "../../../../global/validators/text_length_vali
 import ErrorTextComponent from "../../../../global/components/ErrorTextComponent";
 import TitleClosable from "../../../../global/components/title-closable/TitleClosable";
 import EmptyComponent from "../../../../global/components/EmptyComponent";
-
+import SimpleInputComponent from "../../../../global/components/inputs/SimpleInputComponent";
 import LoadingSkeletonComponent from "../../../../global/components/animations/SkeletonLoader/LoadingSkeletonComponent";
 
 import styles from "./NameSection.module.css";
 import { Grid, Table, TableHead, TableRow, TableCell, TableBody, Card, Typography, Button, TextField } from "@mui/material";
-import ArrowDropDownCircleIcon from "@mui/icons-material/ArrowDropDownCircle";
 
 function NameSection() {
   /* Estados */

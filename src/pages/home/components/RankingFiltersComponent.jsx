@@ -1,14 +1,20 @@
+import { useState } from "react";
 import EmptyComponent from "../../../global/components/EmptyComponent";
 import SimpleButtonComponent from "../../../global/components/buttons/SimpleButtonComponent";
 import TitleClosable from "../../../global/components/title-closable/TitleClosable";
 import decadasList from "../data/decadas_list";
 import nRegisterList from "../data/n_registers_list";
 import sexList from "../data/sex_list";
-import ArrowDropDownCircleIcon from "@mui/icons-material/ArrowDropDownCircle";
-import { Grid, Select, MenuItem, FormControl, InputLabel, Box, Typography, Button } from "@mui/material";
+import { Grid, Select, MenuItem, FormControl, InputLabel, Box } from "@mui/material";
 
 // TODO: os states de abrir e fechar os títulos e de esconder os componentes foram passador por props, rever se nao seria melhor criar aqui mesmo
-function RankingFiltersComponent({ sex, decade, localitiesStates, isFiltersClosed, localitiesCities, localitiesStatesSelected, localitiesCitiesSelected, nRegistersState, handleChangeDecade, handleChangeNRegisters, handleChangeSex, handleChangeLocalitiesStatesSelected, handleChangeLocalitiesCitiesSelected, isLoadingLocalitiesStates, isLoadingLocalitiesCities, fnOnClick, disabled, handleClearRankingChildrenFilters, handleClosedFilters }) {
+function RankingFiltersComponent({ sex, decade, localitiesStates, localitiesCities, localitiesStatesSelected, localitiesCitiesSelected, nRegistersState, handleChangeDecade, handleChangeNRegisters, handleChangeSex, handleChangeLocalitiesStatesSelected, handleChangeLocalitiesCitiesSelected, isLoadingLocalitiesStates, isLoadingLocalitiesCities, fnOnClick, disabled, handleClearRankingChildrenFilters }) {
+  const [isFiltersClosed, setIsFiltersClosed] = useState(false);
+
+  const handleClosedFilters = () => {
+    setIsFiltersClosed(!isFiltersClosed);
+  };
+
   return (
     /* TODO: Trocar o Select pelo AutoComplete -> https://mui.com/material-ui/react-autocomplete/#combo-box */
     <Grid container wrap="wrap">
@@ -31,7 +37,7 @@ function RankingFiltersComponent({ sex, decade, localitiesStates, isFiltersClose
                 </FormControl>
               </div>
 
-              <div style={{ marginLeft: "16px" }}>
+              <div>
                 <FormControl sx={{ m: 1, minWidth: 150 }}>
                   <InputLabel id="decade-label">Década</InputLabel>
                   <Select labelId="decade-label" id="decade" value={decade} onChange={handleChangeDecade} autoWidth label="Década" sx={{ width: "200px" }}>
@@ -61,7 +67,7 @@ function RankingFiltersComponent({ sex, decade, localitiesStates, isFiltersClose
                 </FormControl>
               </div>
 
-              <div style={{ marginLeft: "16px" }}>
+              <div>
                 <FormControl sx={{ m: 1, minWidth: 150 }}>
                   <InputLabel id="city-label">Cidade</InputLabel>
                   <Select labelId="city-label" id="city" value={localitiesCitiesSelected} onChange={handleChangeLocalitiesCitiesSelected} autoWidth label="Cidade" disabled={isLoadingLocalitiesCities || !localitiesStatesSelected} sx={{ width: "200px" }}>
@@ -78,7 +84,7 @@ function RankingFiltersComponent({ sex, decade, localitiesStates, isFiltersClose
 
           <Grid item xs={12} sm={12}>
             <div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
-              <div>
+              <div style={{ marginBottom: "5px" }}>
                 <FormControl sx={{ m: 1, minWidth: 150 }}>
                   <InputLabel id="nRegister-label">Nº Registros</InputLabel>
                   <Select labelId="nRegister-label" id="nRegister" value={nRegistersState} onChange={handleChangeNRegisters} autoWidth label="Nº Registros" sx={{ width: "200px" }}>
@@ -94,7 +100,7 @@ function RankingFiltersComponent({ sex, decade, localitiesStates, isFiltersClose
           </Grid>
 
           <Grid item xs={12}>
-            <div style={{ display: "flex", justifyContent: "center", marginTop: "16px" }}>
+            <div style={{ display: "flex", justifyContent: "center", marginTop: "0px" }}>
               <SimpleButtonComponent key="ranking_filter_button" label="Filtrar busca" fn={fnOnClick} disabled={disabled} />
 
               <Box ml={2}>
